@@ -67,7 +67,7 @@ article:first-child {
 }
 
 .hero .tray {
-    background: url("images/tray.png") no-repeat center top;
+    background: url("images/tray.png") no-repeat center center;
     position: absolute;
     top: 0;
     left: 0;
@@ -531,10 +531,9 @@ section#menu::after {
 
 .promo-badge {
     display: inline-block;
-    background: rgba(255, 255, 255, 0.2);
     padding: 8px 20px;
     border-radius: 24px;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
     margin-bottom: 20px;
 }
