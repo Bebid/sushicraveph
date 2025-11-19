@@ -139,6 +139,10 @@ article:first-child {
     z-index: 1000;
 }
 
+.site-title {
+    display: block;
+}
+
 .main-nav {
     max-width: 1440px;
     margin: 0 auto;
@@ -709,6 +713,18 @@ section#menu::after {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .hero p {
+        font-size: 32px;
+        margin-top: 150px;
+    }
+    .hero h1 {
+        margin-top: -600px;
+        font-size: 48px;
+    }
+    .site-title {
+        display: none;
+    }
+
     .nav-menu {
         display: none;
     }
