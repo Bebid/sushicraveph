@@ -454,6 +454,90 @@
             } else {
                 generateGallery();
             }
+
+            // Parallax effect for mobile devices
+            function initParallax() {
+                const tray = document.querySelector(".hero .tray");
+                const hero = document.querySelector(".hero");
+                if (!tray || !hero) return;
+
+                // Check if we're on mobile phone only (not tablet or desktop)
+                // Using 640px breakpoint to exclude tablets (typically 768px+)
+                const isMobile = window.innerWidth <= 640;
+
+                if (isMobile) {
+                    let ticking = false;
+                    let lastScrollY = window.scrollY;
+
+                    function updateParallax() {
+                        const scrollY = window.scrollY;
+                        const heroRect = hero.getBoundingClientRect();
+                        const heroHeight = hero.offsetHeight;
+
+                        // Calculate how much of the hero section is visible
+                        // When hero is at top of viewport, scrollProgress = 0
+                        // When hero is scrolled past, scrollProgress = 1
+                        const heroTop = heroRect.top;
+                        const scrollProgress = Math.max(
+                            -100,
+                            Math.min(1, -heroTop / heroHeight)
+                        );
+
+                        // Parallax effect: background moves slower than scroll
+                        // Multiplier of 0.5 means background moves at half the scroll speed
+                        // Negative because we want it to move opposite to scroll direction
+                        const parallaxSpeed = 0.6; // Adjust this for more/less movement (0.3-0.8 range)
+                        const initialOffset = -100; // Initial position offset
+                        const parallaxOffset =
+                            initialOffset + scrollY * parallaxSpeed;
+
+                        // Apply parallax - background moves down as user scrolls down
+                        tray.style.backgroundPosition = `center ${parallaxOffset}px`;
+
+                        lastScrollY = scrollY;
+                        ticking = false;
+                    }
+
+                    function requestTick() {
+                        if (!ticking) {
+                            requestAnimationFrame(updateParallax);
+                            ticking = true;
+                        }
+                    }
+
+                    // Listen to scroll events
+                    window.addEventListener("scroll", requestTick, {
+                        passive: true,
+                    });
+
+                    // Initial call
+                    updateParallax();
+                }
+            }
+
+            // Initialize parallax
+            if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", initParallax);
+            } else {
+                initParallax();
+            }
+
+            // Re-initialize on resize to handle orientation changes
+            let resizeTimer;
+            window.addEventListener("resize", function () {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function () {
+                    const tray = document.querySelector(".hero .tray");
+                    if (tray && window.innerWidth > 640) {
+                        // Reset styles for tablet/desktop
+                        tray.style.backgroundPosition = "";
+                        tray.style.transform = "";
+                    } else {
+                        // Re-initialize for mobile
+                        initParallax();
+                    }
+                }, 250);
+            });
         </script>
     </body>
 </html>
