@@ -420,6 +420,17 @@
             .delivery-badge.delivery { background: #e8f4fd; color: #0277b6; }
             .delivery-badge.pickup   { background: #fff3e8; color: #ff8c42; }
 
+            .priority-badge {
+                display: inline-block;
+                padding: 3px 10px;
+                border-radius: 99px;
+                font-size: 11px;
+                font-weight: 700;
+                white-space: nowrap;
+            }
+            .priority-badge.priority { background: #fff0f0; color: #e74c3c; }
+            .priority-badge.regular  { background: #f0f0f0; color: #888; }
+
             /* ── Mobile Order Cards ── */
             .orders-cards { display: none; }
 
@@ -928,6 +939,7 @@
                         <div class="modal-section-title">Delivery Info</div>
                         <div class="info-grid">
                             <div class="info-item"><label>Type</label><span id="m-type"></span></div>
+                            <div class="info-item" id="m-priority-wrap"><label>Delivery Speed</label><span id="m-priority"></span></div>
                             <div class="info-item"><label>Preferred Date</label><span id="m-date"></span></div>
                             <div class="info-item"><label>Preferred Time</label><span id="m-time"></span></div>
                             <div class="info-item" id="m-addr-wrap"><label>Address</label><span id="m-addr"></span></div>
@@ -1236,7 +1248,10 @@
                         <td class="items-summary" title="${esc(itemsSummary(o.items))}">${esc(itemsSummary(o.items))}</td>
                         <td class="total-cell">₱${(o.total || 0).toLocaleString()}</td>
                         <td class="date-cell">${esc(o.preferred_date) || '—'}</td>
-                        <td><span class="delivery-badge ${esc(o.delivery_type)}">${o.delivery_type === 'delivery' ? '🚚 Delivery' : '🏪 Pickup'}</span></td>
+                        <td>
+                            <span class="delivery-badge ${esc(o.delivery_type)}">${o.delivery_type === 'delivery' ? '🚚 Delivery' : '🏪 Pickup'}</span>
+                            ${o.delivery_type === 'delivery' && o.delivery_priority ? `<br><span class="priority-badge ${esc(o.delivery_priority)}">${o.delivery_priority === 'priority' ? '⚡ Priority' : '🛵 Regular'}</span>` : ''}
+                        </td>
                         <td><span class="status-badge ${esc(o.status)}">${esc(o.status)}</span></td>
                         <td class="action-cell" onclick="event.stopPropagation()">
                             <button class="btn-view" onclick="openModal('${esc(o.id)}')">View</button>
@@ -1273,6 +1288,7 @@
                         <div class="order-card-items">${esc(itemsSummary(o.items))}</div>
                         <div class="order-card-meta">
                             <span class="delivery-badge ${esc(o.delivery_type)}">${o.delivery_type === 'delivery' ? '🚚 Delivery' : '🏪 Pickup'}</span>
+                            ${o.delivery_type === 'delivery' && o.delivery_priority ? `<span class="priority-badge ${esc(o.delivery_priority)}">${o.delivery_priority === 'priority' ? '⚡ Priority' : '🛵 Regular'}</span>` : ''}
                             <span style="font-size:12px;color:var(--muted)">${esc(o.preferred_date) || ''}</span>
                             <span class="order-card-total">₱${(o.total || 0).toLocaleString()}</span>
                         </div>
@@ -1326,6 +1342,17 @@
                 document.getElementById('m-addr').textContent = o.delivery_address || '—';
                 document.getElementById('m-addr-wrap').style.display =
                     o.delivery_type === 'pickup' ? 'none' : '';
+
+                // Delivery priority
+                const priorityWrap = document.getElementById('m-priority-wrap');
+                const priorityEl   = document.getElementById('m-priority');
+                if (o.delivery_type === 'delivery' && o.delivery_priority) {
+                    const p = o.delivery_priority;
+                    priorityEl.innerHTML = `<span class="priority-badge ${p}">${p === 'priority' ? '⚡ Priority' : '🛵 Regular'}</span>`;
+                    priorityWrap.style.display = '';
+                } else {
+                    priorityWrap.style.display = 'none';
+                }
 
                 // Items
                 const items = Array.isArray(o.items) ? o.items : [];
