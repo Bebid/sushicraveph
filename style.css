@@ -304,7 +304,9 @@ section#menu::after {
     background: #ffffff;
     border-radius: 24px;
     overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition:
+        transform 0.3s,
+        box-shadow 0.3s;
     position: relative;
     z-index: 1;
 }
@@ -313,6 +315,7 @@ section#menu::after {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    aspect-ratio: 1/1;
 }
 
 .tray-card:hover {
@@ -342,7 +345,6 @@ section#menu::after {
 }
 
 .tray-image {
-    background: linear-gradient(135deg, #ff8c42 0%, #ff6b35 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -372,6 +374,78 @@ section#menu::after {
 .tray-price {
     font-size: 24px;
     font-weight: 700;
+}
+
+/* Flavor cards (menu section) */
+.flavor-cards {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.flavor-addons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.addon-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #fff3e8;
+    color: #ff8c42;
+    border: 1px solid #ffd8b8;
+    border-radius: 99px;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.tray-sizes-mini {
+    display: flex;
+    align-items: center;
+    background: #f9f7f3;
+    border-radius: 14px;
+    padding: 12px 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.size-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+}
+
+.size-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.size-price {
+    font-size: 16px;
+    font-weight: 800;
+    color: #264653;
+}
+
+.size-divider {
+    width: 1px;
+    height: 32px;
+    background: #e0e0e0;
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .flavor-cards {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Why Choose Section */
