@@ -1153,8 +1153,6 @@
                 document.getElementById('qty-nori').textContent   = '0';
                 document.getElementById('nori-row').classList.remove('has-qty');
                 document.getElementById('btn-add-tray').textContent = '+ Add a Tray';
-                document.getElementById('btn-add-tray').style.display = 'block';
-                document.getElementById('tray-picker').style.display  = 'none';
 
                 ['c-name','c-phone','c-messenger','c-address','c-notes'].forEach(id => {
                     const el = document.getElementById(id);
@@ -1173,6 +1171,7 @@
                 document.getElementById('submit-error').style.display = 'none';
                 document.getElementById('success-overlay').classList.remove('show');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+                startPicker();
             }
 
             // ── Init ───────────────────────────────────────────────────
@@ -1180,6 +1179,7 @@
                 updateSummary();
                 const today = new Date().toISOString().split('T')[0];
                 document.getElementById('c-date').setAttribute('min', today);
+                startPicker();
             });
         </script>
     </body>
