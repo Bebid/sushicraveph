@@ -299,6 +299,42 @@
             }
             .picker-confirm-btn:hover { opacity: 0.9; }
 
+            .box-pack-option {
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+                margin-top: 18px;
+                padding: 14px 16px;
+                border: 2px solid #e8e8e8;
+                border-radius: 14px;
+                background: #fff;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: 600;
+                color: #264653;
+                line-height: 1.45;
+                transition: border-color 0.15s, background 0.15s;
+            }
+            .box-pack-option:hover { border-color: #ff8c42; background: #fff9f5; }
+            .box-pack-option input {
+                width: 18px; height: 18px;
+                margin-top: 2px;
+                flex-shrink: 0;
+                accent-color: #ff8c42;
+                cursor: pointer;
+            }
+            .box-pack-option .box-pack-text { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+            .box-pack-option .box-pack-hint {
+                font-size: 13px;
+                font-weight: 700;
+                color: #0277b6;
+            }
+            .box-pack-option .box-pack-sub {
+                font-size: 12px;
+                font-weight: 600;
+                color: #888;
+            }
+
             /* ── Extra Nori ── */
             .nori-row {
                 display: flex;
@@ -432,12 +468,42 @@
             }
             .summary-title { font-size: 20px; font-weight: 800; margin-bottom: 20px; }
             .summary-empty { text-align: center; opacity: 0.6; font-style: italic; font-size: 14px; padding: 16px 0; line-height: 1.6; }
-            .summary-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.12); gap: 8px; }
+            .summary-item {
+                padding: 12px 0;
+                border-bottom: 1px solid rgba(255,255,255,0.12);
+            }
             .summary-item:last-child { border-bottom: none; }
-            .summary-item-left { font-size: 13px; line-height: 1.4; }
+            .summary-item-main {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .summary-item-left { font-size: 13px; line-height: 1.35; flex: 1; min-width: 0; }
             .summary-item-name { font-weight: 700; }
-            .summary-item-sub  { font-size: 12px; opacity: 0.65; }
-            .summary-item-price { font-size: 13px; font-weight: 700; white-space: nowrap; }
+            .summary-item-sub  { font-size: 11px; opacity: 0.62; margin-top: 3px; }
+            .summary-item-price { font-size: 14px; font-weight: 800; white-space: nowrap; color: #ffecd1; }
+            .summary-detail-lines {
+                list-style: none;
+                margin: 8px 0 0 0;
+                padding: 0;
+                font-size: 12px;
+                opacity: 0.78;
+                line-height: 1.35;
+            }
+            .summary-detail-lines li {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                gap: 10px;
+                margin-top: 4px;
+            }
+            .summary-detail-lines li span:first-child { flex: 1; min-width: 0; padding-right: 6px; }
+            .summary-detail-lines li span:last-child {
+                font-weight: 600;
+                white-space: nowrap;
+                font-variant-numeric: tabular-nums;
+            }
             .summary-divider { border: none; border-top: 1px solid rgba(255,255,255,0.2); margin: 14px 0; }
             .summary-total-row { display: flex; justify-content: space-between; align-items: baseline; }
             .summary-total-label  { font-size: 16px; font-weight: 700; }
@@ -599,6 +665,14 @@
                             <div id="step-addon" style="display:none">
                                 <div class="picker-step-label">Step 3 of 3 — Customization</div>
                                 <div class="addon-pick-options" id="addon-pick-options"></div>
+                                <label class="box-pack-option" for="picker-in-box">
+                                    <input type="checkbox" id="picker-in-box" />
+                                    <span class="box-pack-text">
+                                        <span>Pack this tray in a box</span>
+                                        <span class="box-pack-hint" id="picker-in-box-hint"></span>
+                                        <span class="box-pack-sub">Takeout / hand carry · Solo +₱15 · Duo +₱20 · Party +₱25</span>
+                                    </span>
+                                </label>
                                 <div class="picker-footer">
                                     <button class="picker-back-btn" onclick="goToStep('size')">← Back</button>
                                     <button class="picker-confirm-btn" onclick="confirmItem()">Add to Order →</button>
@@ -842,6 +916,18 @@
                 { id: 'party', name: 'Party Tray', price: 999, dims: '12×8 in · 2300ml' },
             ];
 
+            const BOX_PACKAGING_PRICE = { solo: 15, duo: 20, party: 25 };
+            function getBoxPackagingPrice(trayId) {
+                return BOX_PACKAGING_PRICE[trayId] || 0;
+            }
+
+            function updateBoxPackagingHint() {
+                const hint = document.getElementById('picker-in-box-hint');
+                if (!hint || !picking.trayId) return;
+                const p = getBoxPackagingPrice(picking.trayId);
+                hint.textContent = p ? `Adds ₱${p} for this tray size` : '';
+            }
+
             // ── State ──────────────────────────────────────────────────
             let cart = [];
             let noriQty = 0;
@@ -852,6 +938,10 @@
             // ── Picker ─────────────────────────────────────────────────
             function startPicker() {
                 picking = { flavorId: null, trayId: null, trayPrice: null, addonId: 'none' };
+                const boxChk = document.getElementById('picker-in-box');
+                if (boxChk) boxChk.checked = false;
+                const boxHint = document.getElementById('picker-in-box-hint');
+                if (boxHint) boxHint.textContent = '';
                 document.getElementById('btn-add-tray').style.display = 'none';
                 document.getElementById('tray-picker').style.display  = 'block';
                 goToStep('flavor');
@@ -893,8 +983,11 @@
                 picking.trayId    = trayId;
                 picking.trayPrice = price;
                 picking.addonId   = 'none';
+                const boxChk = document.getElementById('picker-in-box');
+                if (boxChk) boxChk.checked = false;
                 buildAddonOptions();
                 goToStep('addon');
+                updateBoxPackagingHint();
             }
 
             function buildAddonOptions() {
@@ -923,7 +1016,9 @@
                 const flavor  = FLAVORS[picking.flavorId];
                 const tray    = TRAYS.find(t => t.id === picking.trayId);
                 const addon   = flavor.addons.find(a => a.id === picking.addonId);
-                const unitPrice = tray.price + addon.price;
+                const inBox = document.getElementById('picker-in-box').checked;
+                const boxPrice = inBox ? getBoxPackagingPrice(tray.id) : 0;
+                const unitPrice = tray.price + addon.price + boxPrice;
 
                 cart.push({
                     uid:         Date.now().toString(36) + Math.random().toString(36).slice(2,5),
@@ -937,7 +1032,9 @@
                     addonId:     addon.id,
                     addonLabel:  addon.label,
                     addonPrice:  addon.price,
+                    boxPrice,
                     unitPrice,
+                    inBox,
                 });
 
                 cancelPicker();
@@ -963,7 +1060,7 @@
                         <div class="cart-item-emoji">${item.flavorEmoji}</div>
                         <div class="cart-item-info">
                             <div class="cart-item-name">${item.flavorLabel} — ${item.trayName}</div>
-                            <div class="cart-item-meta">${item.addonId !== 'none' ? item.addonLabel : 'No extras'}</div>
+                            <div class="cart-item-meta">${item.addonId !== 'none' ? item.addonLabel : 'No extras'}${item.inBox ? ' · Box (+₱' + item.boxPrice + ')' : ''}</div>
                         </div>
                         <div class="cart-item-price">₱${item.unitPrice.toLocaleString()}</div>
                         <button class="cart-item-remove" onclick="removeCartItem('${item.uid}')" aria-label="Remove">×</button>
@@ -996,24 +1093,44 @@
                     return;
                 }
 
-                let html = cart.map(item => `
+                let html = cart.map(item => {
+                    const detailRows = [
+                        `<li><span>${item.trayName}</span><span>₱${item.basePrice.toLocaleString()}</span></li>`,
+                    ];
+                    if (item.addonId !== 'none' && item.addonPrice > 0) {
+                        detailRows.push(`<li><span>${item.addonLabel}</span><span>₱${item.addonPrice.toLocaleString()}</span></li>`);
+                    }
+                    if (item.inBox && item.boxPrice > 0) {
+                        detailRows.push(`<li><span>Box packaging</span><span>₱${item.boxPrice.toLocaleString()}</span></li>`);
+                    }
+                    return `
                     <div class="summary-item">
-                        <div class="summary-item-left">
-                            <div class="summary-item-name">${item.flavorEmoji} ${item.flavorLabel}</div>
-                            <div class="summary-item-sub">${item.trayName} · ${item.trayDims}${item.addonId !== 'none' ? ' · ' + item.addonLabel : ''}</div>
+                        <div class="summary-item-main">
+                            <div class="summary-item-left">
+                                <div class="summary-item-name">${item.flavorEmoji} ${item.flavorLabel}</div>
+                                <div class="summary-item-sub">${item.trayName} · ${item.trayDims}</div>
+                            </div>
+                            <div class="summary-item-price">₱${item.unitPrice.toLocaleString()}</div>
                         </div>
-                        <div class="summary-item-price">₱${item.unitPrice.toLocaleString()}</div>
+                        <ul class="summary-detail-lines">${detailRows.join('')}</ul>
                     </div>
-                `).join('');
+                `;
+                }).join('');
 
                 if (noriQty > 0) {
+                    const noriSub = 35 * noriQty;
                     html += `
                         <div class="summary-item">
-                            <div class="summary-item-left">
-                                <div class="summary-item-name">📦 Extra Nori</div>
-                                <div class="summary-item-sub">₱35 × ${noriQty}</div>
+                            <div class="summary-item-main">
+                                <div class="summary-item-left">
+                                    <div class="summary-item-name">📦 Extra Nori</div>
+                                    <div class="summary-item-sub">${noriQty} pack${noriQty === 1 ? '' : 's'}</div>
+                                </div>
+                                <div class="summary-item-price">₱${noriSub.toLocaleString()}</div>
                             </div>
-                            <div class="summary-item-price">₱${(35 * noriQty).toLocaleString()}</div>
+                            <ul class="summary-detail-lines">
+                                <li><span>₱35 × ${noriQty}</span><span>₱${noriSub.toLocaleString()}</span></li>
+                            </ul>
                         </div>`;
                 }
 
@@ -1100,6 +1217,8 @@
                     unitPrice:   item.unitPrice,
                     qty:         1,
                     subtotal:    item.unitPrice,
+                    inBox:       !!item.inBox,
+                    boxPrice:    item.inBox ? (item.boxPrice || 0) : 0,
                 }));
 
                 if (noriQty > 0) {

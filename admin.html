@@ -1228,7 +1228,14 @@
             function itemsSummary(items) {
                 if (!Array.isArray(items) || items.length === 0) return '—';
                 return items
-                    .map(i => `${i.qty}× ${i.flavorLabel ? i.flavorLabel + ' ' : ''}${i.trayName || ''}`.trim())
+                    .map(i => {
+                        let s = `${i.qty}× ${i.flavorLabel ? i.flavorLabel + ' ' : ''}${i.trayName || ''}`.trim();
+                        if (i.inBox) {
+                            const bp = Number(i.boxPrice);
+                            s += bp > 0 ? ` (box +₱${bp})` : ' (box)';
+                        }
+                        return s;
+                    })
                     .join(', ');
             }
 
@@ -1373,15 +1380,25 @@
 
                 // Items
                 const items = Array.isArray(o.items) ? o.items : [];
-                document.getElementById('m-items').innerHTML = items.map(item => `
+                document.getElementById('m-items').innerHTML = items.map(item => {
+                    const addonPart = item.addonLabel && item.addonLabel !== 'None' ? item.addonLabel : '';
+                    const boxAmt = item.inBox ? (Number(item.boxPrice) || 0) : 0;
+                    const boxPart = item.inBox
+                        ? (addonPart ? ' · ' : '') + (boxAmt > 0
+                            ? `Packed in box (+₱${boxAmt.toLocaleString()})`
+                            : 'Packed in box')
+                        : '';
+                    const cust = (addonPart || boxPart) ? addonPart + boxPart : '—';
+                    return `
                     <tr>
                         <td>${esc((item.flavorLabel || '') + (item.trayName ? ' ' + item.trayName : ''))}</td>
-                        <td>${esc(item.addonLabel && item.addonLabel !== 'None' ? item.addonLabel : '—')}</td>
+                        <td>${esc(cust)}</td>
                         <td style="text-align:right">₱${(item.unitPrice || 0).toLocaleString()}</td>
                         <td style="text-align:center">${item.qty}</td>
                         <td style="text-align:right">₱${(item.subtotal || 0).toLocaleString()}</td>
                     </tr>
-                `).join('');
+                `;
+                }).join('');
                 document.getElementById('m-total').textContent = '₱' + (o.total || 0).toLocaleString();
 
                 // Notes
