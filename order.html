@@ -323,13 +323,29 @@
                 accent-color: #ff8c42;
                 cursor: pointer;
             }
-            .box-pack-option .box-pack-text { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-            .box-pack-option .box-pack-hint {
-                font-size: 13px;
+            .box-pack-option .box-pack-text {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+            .box-pack-option .box-pack-title {
+                font-size: 15px;
+                font-weight: 700;
+                color: #264653;
+                line-height: 1.35;
+            }
+            .box-pack-option .box-pack-price-tag {
                 font-weight: 700;
                 color: #0277b6;
             }
-            .box-pack-option .box-pack-sub {
+            .box-pack-option .box-pack-taglish {
+                font-size: 13px;
+                font-weight: 500;
+                color: #444;
+                line-height: 1.45;
+            }
+            .box-pack-option .box-pack-tiers {
                 font-size: 12px;
                 font-weight: 600;
                 color: #888;
@@ -668,9 +684,12 @@
                                 <label class="box-pack-option" for="picker-in-box">
                                     <input type="checkbox" id="picker-in-box" />
                                     <span class="box-pack-text">
-                                        <span>Pack this tray in a box</span>
-                                        <span class="box-pack-hint" id="picker-in-box-hint"></span>
-                                        <span class="box-pack-sub">Takeout / hand carry · Solo +₱15 · Duo +₱20 · Party +₱25</span>
+                                        <span class="box-pack-title">
+                                            Add box packaging
+                                            <span class="box-pack-price-tag" id="picker-in-box-price-tag"></span>
+                                        </span>
+                                        <span class="box-pack-taglish">Para mas safe sa byahe at madaling dalhin po 😊</span>
+                                        <span class="box-pack-tiers">Solo +₱15 • Duo +₱20 • Party +₱25</span>
                                     </span>
                                 </label>
                                 <div class="picker-footer">
@@ -922,10 +941,10 @@
             }
 
             function updateBoxPackagingHint() {
-                const hint = document.getElementById('picker-in-box-hint');
-                if (!hint || !picking.trayId) return;
+                const tag = document.getElementById('picker-in-box-price-tag');
+                if (!tag || !picking.trayId) return;
                 const p = getBoxPackagingPrice(picking.trayId);
-                hint.textContent = p ? `Adds ₱${p} for this tray size` : '';
+                tag.textContent = p ? ' (+₱' + p + ')' : '';
             }
 
             // ── State ──────────────────────────────────────────────────
@@ -940,8 +959,8 @@
                 picking = { flavorId: null, trayId: null, trayPrice: null, addonId: 'none' };
                 const boxChk = document.getElementById('picker-in-box');
                 if (boxChk) boxChk.checked = false;
-                const boxHint = document.getElementById('picker-in-box-hint');
-                if (boxHint) boxHint.textContent = '';
+                const boxPriceTag = document.getElementById('picker-in-box-price-tag');
+                if (boxPriceTag) boxPriceTag.textContent = '';
                 document.getElementById('btn-add-tray').style.display = 'none';
                 document.getElementById('tray-picker').style.display  = 'block';
                 goToStep('flavor');
