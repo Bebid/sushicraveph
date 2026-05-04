@@ -565,6 +565,48 @@
                 color: #264653;
             }
 
+            .promo-actions {
+                margin-top: 14px;
+                padding-top: 14px;
+                border-top: 1px solid #f0f2f5;
+            }
+            .btn-cancel-promo {
+                padding: 8px 16px;
+                background: white;
+                border: 2px solid #95a5a6;
+                color: #264653;
+                border-radius: 10px;
+                font-size: 13px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: border-color 0.15s, background 0.15s;
+            }
+            .btn-cancel-promo:hover {
+                border-color: #264653;
+                background: #f8f9fa;
+            }
+            .btn-restore-promo {
+                padding: 8px 16px;
+                background: #edfbf1;
+                border: 2px solid #27ae60;
+                color: #1e8449;
+                border-radius: 10px;
+                font-size: 13px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: background 0.15s, border-color 0.15s;
+            }
+            .btn-restore-promo:hover {
+                background: #d4efdf;
+                border-color: #1e8449;
+            }
+            .promo-cancel-hint {
+                font-size: 12px;
+                color: var(--muted);
+                margin-top: 8px;
+                line-height: 1.45;
+            }
+
             /* Modal items table */
             .modal-items-table {
                 width: 100%;
@@ -936,6 +978,51 @@
 
                 <div class="modal-body">
 
+                    <!-- Order summary first -->
+                    <div class="modal-section">
+                        <div class="modal-section-title">Order Summary</div>
+                        <table class="modal-items-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Customization</th>
+                                    <th>Unit Price</th>
+                                    <th>Qty</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="m-items"></tbody>
+                        </table>
+                        <div class="modal-total-row">
+                            <span class="modal-total-label">Total</span>
+                            <span class="modal-total-amount" id="m-total"></span>
+                        </div>
+                    </div>
+
+                    <div class="modal-section" id="m-promo-section" style="display: none;">
+                        <div class="modal-section-title">Promotion</div>
+                        <div class="info-grid">
+                            <div class="info-item"><label>First order promo</label><span id="m-promo-first-order"></span></div>
+                            <div class="info-item"><label>Tray discount total</label><span id="m-promo-discount-total"></span></div>
+                        </div>
+                        <div class="promo-actions" id="m-promo-cancel-wrap" style="display: none;">
+                            <button type="button" class="btn-cancel-promo" onclick="cancelFirstOrderPromo()">
+                                Cancel first order promo
+                            </button>
+                            <p class="promo-cancel-hint">
+                                Removes the per-tray promo from line items, clears promo flags, and updates the order total. You can restore it afterward.
+                            </p>
+                        </div>
+                        <div class="promo-actions" id="m-promo-restore-wrap" style="display: none;">
+                            <button type="button" class="btn-restore-promo" onclick="restoreFirstOrderPromo()">
+                                Restore first order promo
+                            </button>
+                            <p class="promo-cancel-hint">
+                                Re-applies ₱50 off each eligible tray (same as checkout) and updates the total.
+                            </p>
+                        </div>
+                    </div>
+
                     <!-- Customer -->
                     <div class="modal-section">
                         <div class="modal-section-title">Customer Details</div>
@@ -955,35 +1042,6 @@
                             <div class="info-item"><label>Preferred Date</label><span id="m-date"></span></div>
                             <div class="info-item"><label>Preferred Time</label><span id="m-time"></span></div>
                             <div class="info-item" id="m-addr-wrap"><label>Address</label><span id="m-addr"></span></div>
-                        </div>
-                    </div>
-
-                    <div class="modal-section" id="m-promo-section" style="display: none;">
-                        <div class="modal-section-title">Promotion</div>
-                        <div class="info-grid">
-                            <div class="info-item"><label>First order promo</label><span id="m-promo-first-order"></span></div>
-                            <div class="info-item"><label>Tray discount total</label><span id="m-promo-discount-total"></span></div>
-                        </div>
-                    </div>
-
-                    <!-- Items -->
-                    <div class="modal-section">
-                        <div class="modal-section-title">Order Items</div>
-                        <table class="modal-items-table">
-                            <thead>
-                                <tr>
-                                    <th>Item</th>
-                                    <th>Customization</th>
-                                    <th>Unit Price</th>
-                                    <th>Qty</th>
-                                    <th>Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody id="m-items"></tbody>
-                        </table>
-                        <div class="modal-total-row">
-                            <span class="modal-total-label">Total</span>
-                            <span class="modal-total-amount" id="m-total"></span>
                         </div>
                     </div>
 
@@ -1038,6 +1096,16 @@
                 query: '',
                 activeId: null,
             };
+
+            /** Matches checkout: ₱50 off per tray line (excludes nori add-on rows). */
+            const FIRST_ORDER_PROMO_TRAY_DISCOUNT = 50;
+
+            function isFirstOrderPromoTrayLine(item) {
+                if (!item) return false;
+                if (item.trayId === 'nori') return false;
+                if (item.flavor === 'addon') return false;
+                return true;
+            }
 
             // ── Auth ───────────────────────────────────────────────────
             async function initAuth() {
@@ -1381,22 +1449,33 @@
                     priorityWrap.style.display = 'none';
                 }
 
-                const promoSec = document.getElementById('m-promo-section');
+                const items = Array.isArray(o.items) ? o.items : [];
                 const promoDiscTotal = Number(o.promo_discount_total) || 0;
-                if (o.first_order_promo || promoDiscTotal > 0) {
-                    document.getElementById('m-promo-first-order').textContent = o.first_order_promo
-                        ? 'Requested / applied'
-                        : '—';
+                const hasLinePromo = items.some(it => (Number(it.promo_discount) || 0) > 0);
+                const restorable = !!o.first_order_promo_restorable;
+                const hasActivePromo = !!(o.first_order_promo || promoDiscTotal > 0 || hasLinePromo);
+                const showPromoSection = hasActivePromo || restorable;
+
+                const promoSec = document.getElementById('m-promo-section');
+                const cancelWrap = document.getElementById('m-promo-cancel-wrap');
+                const restoreWrap = document.getElementById('m-promo-restore-wrap');
+                if (showPromoSection) {
+                    document.getElementById('m-promo-first-order').textContent = hasActivePromo
+                        ? (o.first_order_promo ? 'Requested / applied' : '—')
+                        : (restorable ? 'Removed by admin — can restore' : '—');
                     document.getElementById('m-promo-discount-total').textContent = promoDiscTotal > 0
                         ? '−₱' + promoDiscTotal.toLocaleString()
                         : '—';
                     promoSec.style.display = '';
+                    cancelWrap.style.display = hasActivePromo ? 'block' : 'none';
+                    restoreWrap.style.display = !hasActivePromo && restorable ? 'block' : 'none';
                 } else {
                     promoSec.style.display = 'none';
+                    cancelWrap.style.display = 'none';
+                    restoreWrap.style.display = 'none';
                 }
 
                 // Items
-                const items = Array.isArray(o.items) ? o.items : [];
                 document.getElementById('m-items').innerHTML = items.map(item => {
                     const addonPart = item.addonLabel && item.addonLabel !== 'None' ? item.addonLabel : '';
                     const boxAmt = item.inBox ? (Number(item.boxPrice) || 0) : 0;
@@ -1435,6 +1514,128 @@
 
                 // Status select
                 document.getElementById('m-status-select').value = o.status || 'pending';
+            }
+
+            async function cancelFirstOrderPromo() {
+                if (!state.activeId) return;
+                const o = state.orders.find(x => x.id === state.activeId);
+                if (!o) return;
+
+                const rawItems = Array.isArray(o.items) ? o.items : [];
+                const hasLinePromo = rawItems.some(it => (Number(it.promo_discount) || 0) > 0);
+                const promoDiscTotal = Number(o.promo_discount_total) || 0;
+                if (!o.first_order_promo && promoDiscTotal <= 0 && !hasLinePromo) return;
+
+                if (!confirm('Remove the first order promo from this order? Line prices and total will update.')) return;
+
+                const items = rawItems.map(item => {
+                    const pd = Number(item.promo_discount) || 0;
+                    if (pd <= 0) return { ...item };
+                    const qty = Number(item.qty) || 1;
+                    const u = (Number(item.unitPrice) || 0) + pd;
+                    return { ...item, unitPrice: u, subtotal: u * qty, promo_discount: 0 };
+                });
+
+                const newTotal = items.reduce((sum, it) => sum + (Number(it.subtotal) || 0), 0);
+
+                const { error } = await _sb
+                    .from('orders')
+                    .update({
+                        first_order_promo: false,
+                        promo_discount_total: 0,
+                        first_order_promo_restorable: true,
+                        items,
+                        total: newTotal,
+                    })
+                    .eq('id', state.activeId);
+
+                if (error) {
+                    showToast('Could not cancel promo.');
+                    console.error(error);
+                    return;
+                }
+
+                const idx = state.orders.findIndex(x => x.id === state.activeId);
+                if (idx !== -1) {
+                    state.orders[idx] = {
+                        ...state.orders[idx],
+                        first_order_promo: false,
+                        promo_discount_total: 0,
+                        first_order_promo_restorable: true,
+                        items,
+                        total: newTotal,
+                    };
+                }
+                applyFilters();
+                renderAll();
+                const refreshed = state.orders.find(x => x.id === state.activeId);
+                if (refreshed) populateModal(refreshed);
+                showToast('First order promo removed.');
+            }
+
+            async function restoreFirstOrderPromo() {
+                if (!state.activeId) return;
+                const o = state.orders.find(x => x.id === state.activeId);
+                if (!o || !o.first_order_promo_restorable) return;
+
+                const rawItems = Array.isArray(o.items) ? o.items : [];
+                if (!confirm('Restore first order promo (₱50 off each tray)? Line prices and total will update.')) return;
+
+                const items = rawItems.map(item => {
+                    if (!isFirstOrderPromoTrayLine(item)) return { ...item };
+                    const existingPd = Number(item.promo_discount) || 0;
+                    if (existingPd > 0) return { ...item };
+                    const qty = Number(item.qty) || 1;
+                    const currentUnit = Number(item.unitPrice) || 0;
+                    const discount = Math.min(FIRST_ORDER_PROMO_TRAY_DISCOUNT, currentUnit);
+                    const newUnit = currentUnit - discount;
+                    return {
+                        ...item,
+                        unitPrice: newUnit,
+                        subtotal: newUnit * qty,
+                        promo_discount: discount,
+                    };
+                });
+
+                const promo_discount_total = items.reduce(
+                    (sum, it) => sum + (Number(it.promo_discount) || 0),
+                    0
+                );
+                const newTotal = items.reduce((sum, it) => sum + (Number(it.subtotal) || 0), 0);
+
+                const { error } = await _sb
+                    .from('orders')
+                    .update({
+                        first_order_promo: true,
+                        promo_discount_total,
+                        first_order_promo_restorable: false,
+                        items,
+                        total: newTotal,
+                    })
+                    .eq('id', state.activeId);
+
+                if (error) {
+                    showToast('Could not restore promo.');
+                    console.error(error);
+                    return;
+                }
+
+                const idx = state.orders.findIndex(x => x.id === state.activeId);
+                if (idx !== -1) {
+                    state.orders[idx] = {
+                        ...state.orders[idx],
+                        first_order_promo: true,
+                        promo_discount_total,
+                        first_order_promo_restorable: false,
+                        items,
+                        total: newTotal,
+                    };
+                }
+                applyFilters();
+                renderAll();
+                const refreshed = state.orders.find(x => x.id === state.activeId);
+                if (refreshed) populateModal(refreshed);
+                showToast('First order promo restored.');
             }
 
             // ── Status Updates ─────────────────────────────────────────
