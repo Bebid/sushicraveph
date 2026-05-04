@@ -963,6 +963,14 @@
                         </div>
                     </div>
 
+                    <div class="modal-section" id="m-promo-section" style="display: none;">
+                        <div class="modal-section-title">Promotion</div>
+                        <div class="info-grid">
+                            <div class="info-item"><label>First order promo</label><span id="m-promo-first-order"></span></div>
+                            <div class="info-item"><label>Tray discount total</label><span id="m-promo-discount-total"></span></div>
+                        </div>
+                    </div>
+
                     <!-- Items -->
                     <div class="modal-section">
                         <div class="modal-section-title">Order Items</div>
@@ -1269,7 +1277,7 @@
                             <div class="customer-name">${esc(o.customer_name)}</div>
                             <div class="customer-phone">${esc(o.customer_phone)}</div>
                         </td>
-                        <td class="items-summary" title="${esc(itemsSummary(o.items))}">${esc(itemsSummary(o.items))}</td>
+                        <td class="items-summary" title="${esc(itemsSummary(o.items) + (o.first_order_promo ? ' · First order promo' : ''))}">${esc(itemsSummary(o.items))}${o.first_order_promo ? ' · 🎁 promo' : ''}</td>
                         <td class="total-cell">₱${(o.total || 0).toLocaleString()}</td>
                         <td class="date-cell">${esc(o.preferred_date) || '—'}</td>
                         <td>
@@ -1309,7 +1317,7 @@
                             </div>
                             <span class="status-badge ${esc(o.status)}">${esc(o.status)}</span>
                         </div>
-                        <div class="order-card-items">${esc(itemsSummary(o.items))}</div>
+                        <div class="order-card-items">${esc(itemsSummary(o.items))}${o.first_order_promo ? ' 🎁 promo' : ''}</div>
                         <div class="order-card-meta">
                             <span class="delivery-badge ${esc(o.delivery_type)}">${o.delivery_type === 'delivery' ? '🚚 Delivery' : '🏪 Pickup'}</span>
                             ${o.delivery_type === 'delivery' && o.delivery_priority ? `<span class="priority-badge ${esc(o.delivery_priority)}">${o.delivery_priority === 'priority' ? '⚡ Priority' : '🛵 Regular'}</span>` : ''}
@@ -1378,17 +1386,37 @@
                     priorityWrap.style.display = 'none';
                 }
 
+                const promoSec = document.getElementById('m-promo-section');
+                const promoDiscTotal = Number(o.promo_discount_total) || 0;
+                if (o.first_order_promo || promoDiscTotal > 0) {
+                    document.getElementById('m-promo-first-order').textContent = o.first_order_promo
+                        ? 'Requested / applied'
+                        : '—';
+                    document.getElementById('m-promo-discount-total').textContent = promoDiscTotal > 0
+                        ? '−₱' + promoDiscTotal.toLocaleString()
+                        : '—';
+                    promoSec.style.display = '';
+                } else {
+                    promoSec.style.display = 'none';
+                }
+
                 // Items
                 const items = Array.isArray(o.items) ? o.items : [];
                 document.getElementById('m-items').innerHTML = items.map(item => {
                     const addonPart = item.addonLabel && item.addonLabel !== 'None' ? item.addonLabel : '';
                     const boxAmt = item.inBox ? (Number(item.boxPrice) || 0) : 0;
-                    const boxPart = item.inBox
-                        ? (addonPart ? ' · ' : '') + (boxAmt > 0
+                    const promoDp = Number(item.promo_discount) || 0;
+                    const custBits = [];
+                    if (addonPart) custBits.push(addonPart);
+                    if (item.inBox) {
+                        custBits.push(boxAmt > 0
                             ? `Packed in box (+₱${boxAmt.toLocaleString()})`
-                            : 'Packed in box')
-                        : '';
-                    const cust = (addonPart || boxPart) ? addonPart + boxPart : '—';
+                            : 'Packed in box');
+                    }
+                    if (promoDp > 0) {
+                        custBits.push(`First order −₱${promoDp.toLocaleString()}`);
+                    }
+                    const cust = custBits.length ? custBits.join(' · ') : '—';
                     return `
                     <tr>
                         <td>${esc((item.flavorLabel || '') + (item.trayName ? ' ' + item.trayName : ''))}</td>

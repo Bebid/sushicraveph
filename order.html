@@ -351,6 +351,50 @@
                 color: #888;
             }
 
+            .promo-option {
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+                margin-top: 14px;
+                padding: 14px 16px;
+                border: 2px solid #e8e8e8;
+                border-radius: 14px;
+                background: linear-gradient(135deg, #fffdf8 0%, #fff9f0 100%);
+                cursor: pointer;
+                font-family: "Bitter", sans-serif;
+                transition: border-color 0.15s, box-shadow 0.15s;
+            }
+            .promo-option:hover {
+                border-color: #27ae60;
+                box-shadow: 0 2px 10px rgba(39, 174, 96, 0.12);
+            }
+            .promo-option input {
+                width: 18px;
+                height: 18px;
+                margin-top: 3px;
+                flex-shrink: 0;
+                accent-color: #27ae60;
+                cursor: pointer;
+            }
+            .promo-option-text {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+            .promo-option-title {
+                font-size: 15px;
+                font-weight: 800;
+                color: #264653;
+                line-height: 1.35;
+            }
+            .promo-option-sub {
+                font-size: 12px;
+                font-weight: 600;
+                color: #666;
+                line-height: 1.45;
+            }
+
             /* ── Extra Nori ── */
             .nori-row {
                 display: flex;
@@ -715,6 +759,14 @@
                             </div>
                         </div>
 
+                        <label class="promo-option" for="first-order-promo">
+                            <input type="checkbox" id="first-order-promo" onchange="toggleFirstOrderPromo()" />
+                            <span class="promo-option-text">
+                                <span class="promo-option-title">First order promo — ₱50 off each tray</span>
+                                <span class="promo-option-sub">Apply if this is your first order with us. We'll verify before confirming.</span>
+                            </span>
+                        </label>
+
                         <p class="tray-error-msg" id="tray-error">
                             Please add at least one tray to continue.
                         </p>
@@ -936,8 +988,29 @@
             ];
 
             const BOX_PACKAGING_PRICE = { solo: 15, duo: 20, party: 25 };
+            const FIRST_ORDER_PROMO_TRAY_DISCOUNT = 50;
             function getBoxPackagingPrice(trayId) {
                 return BOX_PACKAGING_PRICE[trayId] || 0;
+            }
+
+            let firstOrderPromo = false;
+            function toggleFirstOrderPromo() {
+                firstOrderPromo = document.getElementById('first-order-promo').checked;
+                renderCart();
+                updateSummary();
+            }
+
+            function getTrayLinePromoDiscount(item) {
+                if (!firstOrderPromo) return 0;
+                return Math.min(FIRST_ORDER_PROMO_TRAY_DISCOUNT, item.unitPrice);
+            }
+
+            function getTrayLineTotal(item) {
+                return item.unitPrice - getTrayLinePromoDiscount(item);
+            }
+
+            function getPromoDiscountTotal() {
+                return cart.reduce((sum, i) => sum + getTrayLinePromoDiscount(i), 0);
             }
 
             function updateBoxPackagingHint() {
@@ -1079,9 +1152,9 @@
                         <div class="cart-item-emoji">${item.flavorEmoji}</div>
                         <div class="cart-item-info">
                             <div class="cart-item-name">${item.flavorLabel} — ${item.trayName}</div>
-                            <div class="cart-item-meta">${item.addonId !== 'none' ? item.addonLabel : 'No extras'}${item.inBox ? ' · Box (+₱' + item.boxPrice + ')' : ''}</div>
+                            <div class="cart-item-meta">${item.addonId !== 'none' ? item.addonLabel : 'No extras'}${item.inBox ? ' · Box (+₱' + item.boxPrice + ')' : ''}${getTrayLinePromoDiscount(item) > 0 ? ' · First order −₱' + getTrayLinePromoDiscount(item) : ''}</div>
                         </div>
-                        <div class="cart-item-price">₱${item.unitPrice.toLocaleString()}</div>
+                        <div class="cart-item-price">₱${getTrayLineTotal(item).toLocaleString()}</div>
                         <button class="cart-item-remove" onclick="removeCartItem('${item.uid}')" aria-label="Remove">×</button>
                     </div>
                 `).join('');
@@ -1099,7 +1172,7 @@
 
             // ── Summary ────────────────────────────────────────────────
             function getTotal() {
-                return cart.reduce((sum, i) => sum + i.unitPrice, 0) + noriQty * 35;
+                return cart.reduce((sum, i) => sum + getTrayLineTotal(i), 0) + noriQty * 35;
             }
 
             function updateSummary() {
@@ -1113,6 +1186,8 @@
                 }
 
                 let html = cart.map(item => {
+                    const promoDisc = getTrayLinePromoDiscount(item);
+                    const lineTotal = getTrayLineTotal(item);
                     const detailRows = [
                         `<li><span>${item.trayName}</span><span>₱${item.basePrice.toLocaleString()}</span></li>`,
                     ];
@@ -1122,6 +1197,9 @@
                     if (item.inBox && item.boxPrice > 0) {
                         detailRows.push(`<li><span>Box packaging</span><span>₱${item.boxPrice.toLocaleString()}</span></li>`);
                     }
+                    if (promoDisc > 0) {
+                        detailRows.push(`<li><span>First order promo</span><span>−₱${promoDisc.toLocaleString()}</span></li>`);
+                    }
                     return `
                     <div class="summary-item">
                         <div class="summary-item-main">
@@ -1129,7 +1207,7 @@
                                 <div class="summary-item-name">${item.flavorEmoji} ${item.flavorLabel}</div>
                                 <div class="summary-item-sub">${item.trayName} · ${item.trayDims}</div>
                             </div>
-                            <div class="summary-item-price">₱${item.unitPrice.toLocaleString()}</div>
+                            <div class="summary-item-price">₱${lineTotal.toLocaleString()}</div>
                         </div>
                         <ul class="summary-detail-lines">${detailRows.join('')}</ul>
                     </div>
@@ -1224,21 +1302,26 @@
                 const orderId = 'SC-' + Date.now().toString(36).toUpperCase()
                     + '-' + Math.random().toString(36).slice(2,5).toUpperCase();
 
-                const items = cart.map(item => ({
-                    flavor:      item.flavorId,
-                    flavorLabel: item.flavorLabel,
-                    trayId:      item.trayId,
-                    trayName:    item.trayName,
-                    basePrice:   item.basePrice,
-                    addonId:     item.addonId,
-                    addonLabel:  item.addonLabel,
-                    addonPrice:  item.addonPrice,
-                    unitPrice:   item.unitPrice,
-                    qty:         1,
-                    subtotal:    item.unitPrice,
-                    inBox:       !!item.inBox,
-                    boxPrice:    item.inBox ? (item.boxPrice || 0) : 0,
-                }));
+                const items = cart.map(item => {
+                    const promoDisc = getTrayLinePromoDiscount(item);
+                    const lineFinal = item.unitPrice - promoDisc;
+                    return {
+                        flavor:      item.flavorId,
+                        flavorLabel: item.flavorLabel,
+                        trayId:      item.trayId,
+                        trayName:    item.trayName,
+                        basePrice:   item.basePrice,
+                        addonId:     item.addonId,
+                        addonLabel:  item.addonLabel,
+                        addonPrice:  item.addonPrice,
+                        unitPrice:   lineFinal,
+                        qty:         1,
+                        subtotal:    lineFinal,
+                        inBox:       !!item.inBox,
+                        boxPrice:    item.inBox ? (item.boxPrice || 0) : 0,
+                        promo_discount: promoDisc,
+                    };
+                });
 
                 if (noriQty > 0) {
                     items.push({
@@ -1247,6 +1330,7 @@
                         basePrice: 35, addonId: 'none', addonLabel: 'None',
                         addonPrice: 0, unitPrice: 35,
                         qty: noriQty, subtotal: 35 * noriQty,
+                        promo_discount: 0,
                     });
                 }
 
@@ -1255,6 +1339,8 @@
                     status: 'pending',
                     items,
                     total: getTotal(),
+                    first_order_promo: firstOrderPromo,
+                    promo_discount_total: firstOrderPromo ? getPromoDiscountTotal() : 0,
                     customer_name:      document.getElementById('c-name').value.trim(),
                     customer_phone:     document.getElementById('c-phone').value.trim(),
                     customer_messenger: document.getElementById('c-messenger').value.trim() || null,
@@ -1291,6 +1377,9 @@
                 document.getElementById('qty-nori').textContent   = '0';
                 document.getElementById('nori-row').classList.remove('has-qty');
                 document.getElementById('btn-add-tray').textContent = '+ Add a Tray';
+                firstOrderPromo = false;
+                const promoChk = document.getElementById('first-order-promo');
+                if (promoChk) promoChk.checked = false;
 
                 ['c-name','c-phone','c-messenger','c-address','c-notes'].forEach(id => {
                     const el = document.getElementById(id);
