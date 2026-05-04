@@ -24,7 +24,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Open+Sans:wght@400;500;600;700&display=swap"
             rel="stylesheet"
         />
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -48,11 +48,18 @@
             * { margin: 0; padding: 0; box-sizing: border-box; }
 
             body {
-                font-family: "Bitter", sans-serif;
+                font-family: "Open Sans", sans-serif;
                 font-size: 15px;
                 line-height: 1.5;
                 color: var(--text);
                 background: var(--bg);
+            }
+
+            h1, h2, h3,
+            .admin-header-title,
+            .modal-section-title,
+            .orders-table th {
+                font-family: "Bitter", sans-serif;
             }
 
             /* ── Auth Gate ── */
@@ -114,7 +121,6 @@
                 border: 2px solid #e0e0e0;
                 border-radius: 12px;
                 font-size: 15px;
-                font-family: "Bitter", sans-serif;
                 color: #264653;
                 background: white;
                 transition: border-color 0.2s;
@@ -132,7 +138,6 @@
                 border-radius: 12px;
                 font-size: 16px;
                 font-weight: 700;
-                font-family: "Bitter", sans-serif;
                 cursor: pointer;
                 transition: opacity 0.2s;
                 margin-top: 4px;
@@ -197,7 +202,6 @@
                 border-radius: 8px;
                 font-size: 14px;
                 font-weight: 700;
-                font-family: "Bitter", sans-serif;
                 cursor: pointer;
                 transition: background 0.2s;
             }
@@ -260,7 +264,6 @@
                 font-size: 13px;
                 font-weight: 700;
                 color: #264653;
-                font-family: "Bitter", sans-serif;
                 cursor: pointer;
                 transition: all 0.15s;
                 display: flex;
@@ -299,7 +302,6 @@
                 border: 2px solid #e0e0e0;
                 border-radius: 10px;
                 font-size: 14px;
-                font-family: "Bitter", sans-serif;
                 color: #264653;
                 background: white;
                 width: 240px;
@@ -391,7 +393,6 @@
                 border-radius: 8px;
                 font-size: 12px;
                 font-weight: 700;
-                font-family: "Bitter", sans-serif;
                 cursor: pointer;
                 transition: opacity 0.2s;
             }
@@ -401,7 +402,6 @@
                 border: 2px solid #e0e0e0;
                 border-radius: 8px;
                 font-size: 12px;
-                font-family: "Bitter", sans-serif;
                 font-weight: 700;
                 color: #264653;
                 cursor: pointer;
@@ -508,7 +508,7 @@
                 font-size: 18px;
                 font-weight: 800;
                 color: #264653;
-                font-family: monospace;
+                font-family: "Bitter", sans-serif;
             }
             .modal-created {
                 font-size: 12px;
@@ -621,7 +621,6 @@
                 border: 2px solid #e0e0e0;
                 border-radius: 10px;
                 font-size: 14px;
-                font-family: "Bitter", sans-serif;
                 font-weight: 700;
                 color: #264653;
                 cursor: pointer;
@@ -645,7 +644,6 @@
                 border-radius: 10px;
                 font-size: 14px;
                 font-weight: 700;
-                font-family: "Bitter", sans-serif;
                 cursor: pointer;
                 transition: opacity 0.2s;
                 white-space: nowrap;
@@ -659,7 +657,6 @@
                 border-radius: 10px;
                 font-size: 13px;
                 font-weight: 700;
-                font-family: "Bitter", sans-serif;
                 cursor: pointer;
                 margin-left: auto;
                 transition: all 0.15s;
@@ -693,7 +690,6 @@
                 border-radius: 8px;
                 font-size: 13px;
                 font-weight: 700;
-                font-family: "Bitter", sans-serif;
                 cursor: pointer;
             }
             .btn-cancel-delete {
@@ -704,7 +700,6 @@
                 border-radius: 8px;
                 font-size: 13px;
                 font-weight: 700;
-                font-family: "Bitter", sans-serif;
                 cursor: pointer;
             }
 

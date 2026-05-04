@@ -29,7 +29,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Open+Sans:wght@400;500;600;700&display=swap"
             rel="stylesheet"
         />
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -48,6 +48,12 @@
                 grid-template-columns: 1fr 340px;
                 gap: 36px;
                 align-items: start;
+            }
+
+            .summary-title,
+            .picker-step-label,
+            .addons-label {
+                font-family: "Bitter", sans-serif;
             }
 
             /* ── Form Sections ── */
@@ -117,7 +123,6 @@
                 font-weight: 700;
                 color: #264653;
                 cursor: pointer;
-                font-family: "Bitter", sans-serif;
                 transition: all 0.15s;
                 margin-bottom: 16px;
             }
@@ -154,7 +159,6 @@
                 font-size: 13px;
                 color: #aaa;
                 cursor: pointer;
-                font-family: "Bitter", sans-serif;
                 text-decoration: underline;
                 flex-shrink: 0;
             }
@@ -246,7 +250,6 @@
                 font-weight: 700;
                 color: #264653;
                 cursor: pointer;
-                font-family: "Bitter", sans-serif;
                 transition: all 0.15s;
                 white-space: nowrap;
             }
@@ -283,7 +286,6 @@
                 background: white;
                 font-size: 14px; font-weight: 700;
                 color: #264653; cursor: pointer;
-                font-family: "Bitter", sans-serif;
                 transition: border-color 0.15s;
             }
             .picker-back-btn:hover { border-color: #264653; }
@@ -294,7 +296,6 @@
                 background: #ff8c42;
                 font-size: 14px; font-weight: 700;
                 color: white; cursor: pointer;
-                font-family: "Bitter", sans-serif;
                 transition: opacity 0.15s;
             }
             .picker-confirm-btn:hover { opacity: 0.9; }
@@ -361,7 +362,6 @@
                 border-radius: 14px;
                 background: linear-gradient(135deg, #fffdf8 0%, #fff9f0 100%);
                 cursor: pointer;
-                font-family: "Bitter", sans-serif;
                 transition: border-color 0.15s, box-shadow 0.15s;
             }
             .promo-option:hover {
@@ -452,7 +452,7 @@
             .form-group textarea {
                 width: 100%; padding: 12px 16px;
                 border: 2px solid #e0e0e0; border-radius: 12px;
-                font-size: 15px; font-family: "Bitter", sans-serif;
+                font-size: 15px; font-family: "Open Sans", sans-serif;
                 color: #264653; background: white;
                 transition: border-color 0.2s;
                 -webkit-appearance: none; appearance: none;
