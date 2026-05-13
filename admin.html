@@ -399,16 +399,70 @@
             .btn-view:hover { opacity: 0.8; }
             .status-select-inline {
                 padding: 5px 8px;
-                border: 2px solid #e0e0e0;
+                border: 2px solid transparent;
                 border-radius: 8px;
                 font-size: 12px;
                 font-weight: 700;
-                color: #264653;
                 cursor: pointer;
-                background: white;
-                max-width: 110px;
+                max-width: 124px;
+                min-width: 104px;
+                transition: filter 0.15s, box-shadow 0.15s;
             }
-            .status-select-inline:focus { outline: none; border-color: #ff8c42; }
+            .status-select-inline:focus {
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(38, 70, 83, 0.25);
+            }
+            .status-select-inline.status-select-pending {
+                background-color: var(--status-pending);
+                border-color: var(--status-pending);
+                color: white;
+            }
+            .status-select-inline.status-select-confirmed {
+                background-color: var(--status-confirmed);
+                border-color: var(--status-confirmed);
+                color: white;
+            }
+            .status-select-inline.status-select-completed {
+                background-color: var(--status-completed);
+                border-color: var(--status-completed);
+                color: white;
+            }
+            .status-select-inline.status-select-cancelled {
+                background-color: var(--status-cancelled);
+                border-color: var(--status-cancelled);
+                color: white;
+            }
+
+            .modal-status-select.status-select-pending {
+                background-color: var(--status-pending);
+                border-color: var(--status-pending);
+                color: white;
+            }
+            .modal-status-select.status-select-confirmed {
+                background-color: var(--status-confirmed);
+                border-color: var(--status-confirmed);
+                color: white;
+            }
+            .modal-status-select.status-select-completed {
+                background-color: var(--status-completed);
+                border-color: var(--status-completed);
+                color: white;
+            }
+            .modal-status-select.status-select-cancelled {
+                background-color: var(--status-cancelled);
+                border-color: var(--status-cancelled);
+                color: white;
+            }
+            .modal-status-select.status-select-pending,
+            .modal-status-select.status-select-confirmed,
+            .modal-status-select.status-select-completed,
+            .modal-status-select.status-select-cancelled {
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            }
+            .modal-status-select[class*="status-select-"]:focus {
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(38, 70, 83, 0.25);
+            }
 
             /* ── Status Badges ── */
             .status-badge {
@@ -565,6 +619,67 @@
                 color: #264653;
             }
 
+            .modal-plain-lines {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                font-size: 15px;
+                line-height: 1.5;
+                color: #264653;
+            }
+            .modal-plain-line.modal-plain-lead {
+                font-size: 17px;
+                font-weight: 800;
+            }
+            .modal-plain-line.modal-plain-muted {
+                color: #666;
+                font-size: 14px;
+            }
+            .modal-plain-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                align-items: center;
+                margin-top: 6px;
+            }
+
+            .modal-customer-delivery-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 0 24px;
+                align-items: start;
+            }
+            .modal-customer-delivery-col {
+                min-width: 0;
+            }
+            .modal-customer-delivery-col .modal-col-label {
+                font-size: 11px;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                color: var(--muted);
+                margin-bottom: 10px;
+            }
+            @media (min-width: 561px) {
+                .modal-customer-delivery-col:first-child {
+                    border-right: 1px solid #f0f2f5;
+                    padding-right: 20px;
+                }
+                .modal-customer-delivery-col:last-child {
+                    padding-left: 4px;
+                }
+            }
+            @media (max-width: 560px) {
+                .modal-customer-delivery-grid {
+                    grid-template-columns: 1fr;
+                }
+                .modal-customer-delivery-col:first-child {
+                    border-bottom: 1px solid #f0f2f5;
+                    padding-bottom: 18px;
+                    margin-bottom: 6px;
+                }
+            }
+
             .promo-actions {
                 margin-top: 14px;
                 padding-top: 14px;
@@ -677,7 +792,7 @@
                 background-size: 16px;
                 padding-right: 36px;
             }
-            .modal-status-select:focus { outline: none; border-color: #ff8c42; }
+            .modal-status-select:focus { outline: none; }
             .btn-update-status {
                 padding: 9px 20px;
                 background: #ff8c42;
@@ -807,8 +922,27 @@
                     margin-top: 10px;
                 }
                 .order-card-total { font-size: 18px; font-weight: 800; color: #264653; margin-left: auto; }
-                .order-card-actions { display: flex; gap: 8px; margin-top: 12px; }
-                .order-card-actions .btn-view { flex: 1; text-align: center; padding: 10px; font-size: 13px; }
+                .order-card-actions {
+                    display: flex;
+                    gap: 8px;
+                    margin-top: 12px;
+                    align-items: stretch;
+                    flex-wrap: wrap;
+                }
+                .order-card-actions .btn-view {
+                    flex: 1;
+                    min-width: 120px;
+                    text-align: center;
+                    padding: 10px;
+                    font-size: 13px;
+                }
+                .order-card-actions .status-select-inline {
+                    flex: 1;
+                    min-width: 140px;
+                    max-width: none;
+                    padding: 8px 10px;
+                    font-size: 13px;
+                }
 
                 .controls-bar { flex-direction: column; align-items: stretch; }
                 .controls-right { justify-content: space-between; }
@@ -939,12 +1073,11 @@
                                 <th>Total</th>
                                 <th>Pref. Date</th>
                                 <th>Type</th>
-                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="orders-tbody">
-                            <tr class="state-row"><td colspan="8">Loading orders…</td></tr>
+                            <tr class="state-row"><td colspan="7">Loading orders…</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -1023,25 +1156,25 @@
                         </div>
                     </div>
 
-                    <!-- Customer -->
-                    <div class="modal-section">
-                        <div class="modal-section-title">Customer Details</div>
-                        <div class="info-grid">
-                            <div class="info-item"><label>Name</label><span id="m-name"></span></div>
-                            <div class="info-item"><label>Phone</label><span id="m-phone"></span></div>
-                            <div class="info-item"><label>Messenger</label><span id="m-messenger"></span></div>
-                        </div>
-                    </div>
-
-                    <!-- Delivery -->
-                    <div class="modal-section">
-                        <div class="modal-section-title">Delivery Info</div>
-                        <div class="info-grid">
-                            <div class="info-item"><label>Type</label><span id="m-type"></span></div>
-                            <div class="info-item" id="m-priority-wrap"><label>Delivery Speed</label><span id="m-priority"></span></div>
-                            <div class="info-item"><label>Preferred Date</label><span id="m-date"></span></div>
-                            <div class="info-item"><label>Preferred Time</label><span id="m-time"></span></div>
-                            <div class="info-item" id="m-addr-wrap"><label>Address</label><span id="m-addr"></span></div>
+                    <div class="modal-section modal-customer-delivery-group">
+                        <div class="modal-section-title">Customer &amp; delivery</div>
+                        <div class="modal-customer-delivery-grid">
+                            <div class="modal-customer-delivery-col">
+                                <div class="modal-col-label">Customer</div>
+                                <div class="modal-plain-lines">
+                                    <div id="m-name" class="modal-plain-line modal-plain-lead"></div>
+                                    <div id="m-phone" class="modal-plain-line"></div>
+                                    <div id="m-messenger" class="modal-plain-line modal-plain-muted"></div>
+                                </div>
+                            </div>
+                            <div class="modal-customer-delivery-col">
+                                <div class="modal-col-label">Delivery</div>
+                                <div class="modal-plain-lines">
+                                    <div id="m-datetime-line" class="modal-plain-line"></div>
+                                    <div id="m-addr-line" class="modal-plain-line"></div>
+                                    <div id="m-tags-line" class="modal-plain-line modal-plain-tags"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1056,7 +1189,7 @@
                 <!-- Footer: status + delete -->
                 <div class="modal-footer">
                     <span class="modal-status-label">Status:</span>
-                    <select class="modal-status-select" id="m-status-select">
+                    <select class="modal-status-select" id="m-status-select" onchange="syncModalStatusSelectClass(this)">
                         <option value="pending">Pending</option>
                         <option value="confirmed">Confirmed</option>
                         <option value="completed">Completed</option>
@@ -1291,7 +1424,7 @@
             function setTableLoading(loading) {
                 if (loading) {
                     document.getElementById('orders-tbody').innerHTML =
-                        '<tr class="state-row"><td colspan="8">Loading orders…</td></tr>';
+                        '<tr class="state-row"><td colspan="7">Loading orders…</td></tr>';
                 }
             }
 
@@ -1319,11 +1452,54 @@
                     .replace(/"/g, '&quot;');
             }
 
+            function statusSelectClass(status) {
+                const allowed = ['pending', 'confirmed', 'completed', 'cancelled'];
+                return allowed.includes(status) ? status : 'pending';
+            }
+
+            function syncModalStatusSelectClass(sel) {
+                const v = statusSelectClass(sel.value);
+                sel.className = 'modal-status-select status-select-' + v;
+            }
+
             function fmtDate(iso) {
                 if (!iso) return '—';
                 return new Date(iso).toLocaleString('en-PH', {
                     dateStyle: 'medium', timeStyle: 'short'
                 });
+            }
+
+            /** Human-readable preferred date + time from order form (date often YYYY-MM-DD). */
+            function fmtPreferredSlot(dateStr, timeStr) {
+                let datePart = '';
+                if (dateStr) {
+                    const s = String(dateStr).trim();
+                    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+                    if (m) {
+                        const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+                        datePart = d.toLocaleDateString('en-PH', {
+                            weekday: 'short',
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                        });
+                    } else {
+                        const d = new Date(s);
+                        datePart = isNaN(d.getTime())
+                            ? s
+                            : d.toLocaleDateString('en-PH', {
+                                  weekday: 'short',
+                                  month: 'short',
+                                  day: 'numeric',
+                                  year: 'numeric',
+                              });
+                    }
+                }
+                const timePart = timeStr && String(timeStr).trim() ? String(timeStr).trim() : '';
+                if (!datePart && !timePart) return '—';
+                if (!timePart) return datePart;
+                if (!datePart) return timePart;
+                return `${datePart} · ${timePart}`;
             }
 
             // ── Render Table ───────────────────────────────────────────
@@ -1347,10 +1523,9 @@
                             <span class="delivery-badge ${esc(o.delivery_type)}">${o.delivery_type === 'delivery' ? '🚚 Delivery' : '🏪 Pickup'}</span>
                             ${o.delivery_type === 'delivery' && o.delivery_priority ? `<br><span class="priority-badge ${esc(o.delivery_priority)}">${o.delivery_priority === 'priority' ? '⚡ Priority' : '🛵 Regular'}</span>` : ''}
                         </td>
-                        <td><span class="status-badge ${esc(o.status)}">${esc(o.status)}</span></td>
                         <td class="action-cell" onclick="event.stopPropagation()">
                             <button class="btn-view" onclick="openModal('${esc(o.id)}')">View</button>
-                            <select class="status-select-inline"
+                            <select class="status-select-inline status-select-${statusSelectClass(o.status)}"
                                 onchange="quickStatus('${esc(o.id)}', this.value)"
                                 onclick="event.stopPropagation()">
                                 <option value="pending"   ${o.status==='pending'   ? 'selected':''}>Pending</option>
@@ -1378,7 +1553,6 @@
                                 <div class="order-card-name">${esc(o.customer_name)}</div>
                                 <div class="order-card-phone">${esc(o.customer_phone)}</div>
                             </div>
-                            <span class="status-badge ${esc(o.status)}">${esc(o.status)}</span>
                         </div>
                         <div class="order-card-items">${esc(itemsSummary(o.items))}${o.first_order_promo ? ' 🎁 promo' : ''}</div>
                         <div class="order-card-meta">
@@ -1389,6 +1563,14 @@
                         </div>
                         <div class="order-card-actions" onclick="event.stopPropagation()">
                             <button class="btn-view" onclick="openModal('${esc(o.id)}')">View Details</button>
+                            <select class="status-select-inline status-select-${statusSelectClass(o.status)}"
+                                onchange="quickStatus('${esc(o.id)}', this.value)"
+                                onclick="event.stopPropagation()">
+                                <option value="pending"   ${o.status==='pending'   ? 'selected':''}>Pending</option>
+                                <option value="confirmed" ${o.status==='confirmed' ? 'selected':''}>Confirmed</option>
+                                <option value="completed" ${o.status==='completed' ? 'selected':''}>Completed</option>
+                                <option value="cancelled" ${o.status==='cancelled' ? 'selected':''}>Cancelled</option>
+                            </select>
                         </div>
                     </div>
                 `).join('');
@@ -1424,30 +1606,32 @@
                 badge.textContent  = o.status;
                 badge.className    = 'status-badge ' + o.status;
 
-                // Customer
                 document.getElementById('m-name').textContent      = o.customer_name || '—';
                 document.getElementById('m-phone').textContent     = o.customer_phone || '—';
                 document.getElementById('m-messenger').textContent = o.customer_messenger || '—';
 
-                // Delivery
-                const typeEl = document.getElementById('m-type');
-                typeEl.innerHTML = `<span class="delivery-badge ${o.delivery_type}">${o.delivery_type === 'delivery' ? '🚚 Delivery' : '🏪 Pickup'}</span>`;
-                document.getElementById('m-date').textContent = o.preferred_date || '—';
-                document.getElementById('m-time').textContent = o.preferred_time  || '—';
-                document.getElementById('m-addr').textContent = o.delivery_address || '—';
-                document.getElementById('m-addr-wrap').style.display =
-                    o.delivery_type === 'pickup' ? 'none' : '';
+                document.getElementById('m-datetime-line').textContent =
+                    fmtPreferredSlot(o.preferred_date, o.preferred_time);
 
-                // Delivery priority
-                const priorityWrap = document.getElementById('m-priority-wrap');
-                const priorityEl   = document.getElementById('m-priority');
+                const addrEl = document.getElementById('m-addr-line');
+                if (o.delivery_type === 'delivery') {
+                    addrEl.textContent = (o.delivery_address && String(o.delivery_address).trim())
+                        ? o.delivery_address.trim()
+                        : '—';
+                } else {
+                    addrEl.textContent = 'Pickup — no delivery address';
+                }
+
+                const tagParts = [
+                    `<span class="delivery-badge ${esc(o.delivery_type)}">${o.delivery_type === 'delivery' ? '🚚 Delivery' : '🏪 Pickup'}</span>`,
+                ];
                 if (o.delivery_type === 'delivery' && o.delivery_priority) {
                     const p = o.delivery_priority;
-                    priorityEl.innerHTML = `<span class="priority-badge ${p}">${p === 'priority' ? '⚡ Priority' : '🛵 Regular'}</span>`;
-                    priorityWrap.style.display = '';
-                } else {
-                    priorityWrap.style.display = 'none';
+                    tagParts.push(
+                        `<span class="priority-badge ${esc(p)}">${p === 'priority' ? '⚡ Priority' : '🛵 Regular'}</span>`
+                    );
                 }
+                document.getElementById('m-tags-line').innerHTML = tagParts.join('');
 
                 const items = Array.isArray(o.items) ? o.items : [];
                 const promoDiscTotal = Number(o.promo_discount_total) || 0;
@@ -1513,7 +1697,9 @@
                 }
 
                 // Status select
-                document.getElementById('m-status-select').value = o.status || 'pending';
+                const ms = document.getElementById('m-status-select');
+                ms.value = o.status || 'pending';
+                syncModalStatusSelectClass(ms);
             }
 
             async function cancelFirstOrderPromo() {
