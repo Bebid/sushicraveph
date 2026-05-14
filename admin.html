@@ -502,6 +502,17 @@
             .priority-badge.priority { background: #fff0f0; color: #e74c3c; }
             .priority-badge.regular  { background: #f0f0f0; color: #888; }
 
+            .fulfill-mini-badge {
+                display: inline-block;
+                padding: 3px 10px;
+                border-radius: 99px;
+                font-size: 11px;
+                font-weight: 700;
+                white-space: nowrap;
+                background: #edf6fa;
+                color: #0277b6;
+            }
+
             /* ── Mobile Order Cards ── */
             .orders-cards { display: none; }
 
@@ -1237,6 +1248,7 @@
                 if (!item) return false;
                 if (item.trayId === 'nori') return false;
                 if (item.flavor === 'addon') return false;
+                if (item.flavor === 'fee' || item.trayId === 'priority_dispatch') return false;
                 return true;
             }
 
@@ -1614,22 +1626,38 @@
                     fmtPreferredSlot(o.preferred_date, o.preferred_time);
 
                 const addrEl = document.getElementById('m-addr-line');
-                if (o.delivery_type === 'delivery') {
-                    addrEl.textContent = (o.delivery_address && String(o.delivery_address).trim())
-                        ? o.delivery_address.trim()
-                        : '—';
+                addrEl.style.whiteSpace = 'pre-line';
+                const addrTrim = o.delivery_address && String(o.delivery_address).trim();
+                if (addrTrim) {
+                    addrEl.textContent = addrTrim;
+                } else if (o.delivery_type === 'delivery') {
+                    addrEl.textContent = '—';
                 } else {
-                    addrEl.textContent = 'Pickup — no delivery address';
+                    addrEl.textContent = 'Pickup — no meet-up details on file';
                 }
 
                 const tagParts = [
                     `<span class="delivery-badge ${esc(o.delivery_type)}">${o.delivery_type === 'delivery' ? '🚚 Delivery' : '🏪 Pickup'}</span>`,
                 ];
-                if (o.delivery_type === 'delivery' && o.delivery_priority) {
-                    const p = o.delivery_priority;
-                    tagParts.push(
-                        `<span class="priority-badge ${esc(p)}">${p === 'priority' ? '⚡ Priority' : '🛵 Regular'}</span>`
-                    );
+                const ffMap = {
+                    self_pickup: 'Self pickup',
+                    customer_rider: 'Customer-booked rider',
+                    sc_assist: 'Booking assistance',
+                };
+                const ff = o.delivery_fulfillment && ffMap[o.delivery_fulfillment];
+                if (ff) {
+                    tagParts.push(`<span class="fulfill-mini-badge">${esc(ff)}</span>`);
+                }
+                if (o.delivery_type === 'delivery') {
+                    if (o.priority_dispatch === true || o.delivery_priority === 'priority') {
+                        tagParts.push(
+                            `<span class="priority-badge priority">⚡ Priority dispatch</span>`
+                        );
+                    } else if (o.delivery_priority === 'regular') {
+                        tagParts.push(
+                            `<span class="priority-badge regular">🛵 Standard</span>`
+                        );
+                    }
                 }
                 document.getElementById('m-tags-line').innerHTML = tagParts.join('');
 

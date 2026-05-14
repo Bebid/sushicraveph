@@ -471,43 +471,230 @@
             .field-error.show { display: block; }
             .form-group textarea { resize: vertical; min-height: 80px; }
 
-            /* ── Delivery Toggle ── */
-            .delivery-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-            .delivery-option {
-                padding: 14px 10px; border: 2px solid #e0e0e0; border-radius: 12px;
-                cursor: pointer; text-align: center; transition: all 0.2s;
-                font-size: 15px; font-weight: 700; color: #264653; background: #fafafa; user-select: none;
+            /* ── Delivery & dispatch (mobile-first) ── */
+            .delivery-batch-notice {
+                font-size: 14px;
+                line-height: 1.55;
+                color: #264653;
+                background: linear-gradient(135deg, #fff9f0 0%, #e8f4fd 100%);
+                border: 2px solid #e8e8e8;
+                border-radius: 14px;
+                padding: 14px 16px;
+                margin-bottom: 22px;
             }
-            .delivery-option.active { border-color: #ff8c42; background: #fff9f5; color: #ff8c42; }
-            .delivery-option .opt-icon { font-size: 22px; display: block; margin-bottom: 4px; }
-            .addr-group.hidden { display: none; }
-
-            /* ── Delivery Priority ── */
-            .delivery-priority-toggle {
+            .delivery-subheading {
+                font-size: 13px;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                color: #888;
+                margin-bottom: 12px;
+            }
+            .fulfillment-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+            @media (min-width: 640px) {
+                .fulfillment-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+            }
+            .fulfillment-card {
+                position: relative;
+                padding: 16px 14px 14px;
+                border: 2px solid #e0e0e0;
+                border-radius: 14px;
+                background: #fafafa;
+                cursor: pointer;
+                text-align: left;
+                transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+                min-height: 100%;
+            }
+            .fulfillment-card:hover {
+                border-color: #ff8c42;
+                background: #fff;
+            }
+            .fulfillment-card.active {
+                border-color: #ff8c42;
+                background: #fff9f5;
+                box-shadow: 0 4px 14px rgba(255, 140, 66, 0.18);
+            }
+            .fulfillment-card .fulfill-icon {
+                font-size: 26px;
+                display: block;
+                margin-bottom: 6px;
+            }
+            .fulfillment-card .fulfill-title {
+                font-size: 14px;
+                font-weight: 800;
+                color: #264653;
+                line-height: 1.35;
+                margin-bottom: 4px;
+            }
+            .fulfillment-card .fulfill-desc {
+                font-size: 12px;
+                color: #888;
+                line-height: 1.4;
+            }
+            .fulfill-badge {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                font-size: 10px;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                padding: 3px 8px;
+                border-radius: 99px;
+                white-space: nowrap;
+            }
+            .fulfill-badge.fastest {
+                background: #27ae60;
+                color: white;
+            }
+            .fulfill-badge.recommended {
+                background: #0277b6;
+                color: white;
+            }
+            .pickup-handoff-panel {
+                margin-bottom: 16px;
+                padding: 16px 18px;
+                border: 2px solid #e0e8ec;
+                border-radius: 14px;
+                background: linear-gradient(180deg, #f8fbfc 0%, #fff 100%);
+            }
+            .pickup-handoff-panel.hidden { display: none; }
+            .pickup-handoff-title {
+                font-size: 14px;
+                font-weight: 800;
+                color: #264653;
+                margin-bottom: 6px;
+            }
+            .pickup-handoff-intro {
+                font-size: 12px;
+                color: #666;
+                line-height: 1.45;
+                margin-bottom: 12px;
+            }
+            .pickup-handoff-rows {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .pickup-handoff-row {
+                font-size: 14px;
+                line-height: 1.45;
+                color: #264653;
+            }
+            .pickup-handoff-row .ph-label {
+                display: block;
+                font-size: 11px;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: #888;
+                margin-bottom: 2px;
+            }
+            .pickup-handoff-row a {
+                color: #0277b6;
+                font-weight: 700;
+                text-decoration: none;
+            }
+            .pickup-handoff-row a:hover { text-decoration: underline; }
+            .customer-address-panel.hidden { display: none; }
+            .delivery-helper {
+                font-size: 12px;
+                color: #666;
+                line-height: 1.5;
+                margin-top: 8px;
+            }
+            .delivery-helper.tight { margin-top: 4px; margin-bottom: 0; }
+            .delivery-helper.flex-note {
+                margin-top: 14px;
+                padding: 12px 14px;
+                background: #f9f7f3;
+                border-radius: 12px;
+                border: 1px solid #eee;
+            }
+            .dispatch-window-label {
+                display: block;
+                font-size: 14px;
+                font-weight: 700;
+                color: #264653;
+                margin-bottom: 10px;
+            }
+            .dispatch-window-grid {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
                 gap: 10px;
-                margin-bottom: 12px;
+                margin-bottom: 8px;
+                padding: 4px;
+                border-radius: 16px;
+                border: 2px solid transparent;
+                transition: border-color 0.2s, background 0.2s;
             }
-            .priority-option {
-                padding: 12px 10px;
+            .dispatch-window-grid.dispatch-window-error {
+                border-color: #e74c3c;
+                background: #fff5f5;
+            }
+            .dispatch-window-card {
+                padding: 16px 12px;
                 border: 2px solid #e0e0e0;
-                border-radius: 12px;
+                border-radius: 14px;
+                background: white;
                 cursor: pointer;
                 text-align: center;
                 transition: all 0.2s;
-                background: #fafafa;
-                user-select: none;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 2px;
             }
-            .priority-option.active { border-color: #ff8c42; background: #fff9f5; }
-            .priority-icon { font-size: 22px; }
-            .priority-name { font-size: 14px; font-weight: 800; color: #264653; }
-            .priority-desc { font-size: 11px; color: #888; }
-            .priority-option.active .priority-name { color: #ff8c42; }
+            .dispatch-window-card:hover { border-color: #ff8c42; }
+            .dispatch-window-card.active {
+                border-color: #ff8c42;
+                background: #fff9f5;
+                box-shadow: 0 2px 10px rgba(255, 140, 66, 0.2);
+            }
+            .dispatch-window-card .dw-main {
+                font-size: 15px;
+                font-weight: 800;
+                color: #264653;
+                line-height: 1.25;
+            }
+            .dispatch-window-card .dw-sub {
+                font-size: 11px;
+                font-weight: 700;
+                color: #888;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                margin-top: 6px;
+            }
+            #dispatch-window-err {
+                margin-top: 6px;
+            }
+            .priority-dispatch-wrap {
+                margin: 18px 0 8px;
+                padding: 14px 16px;
+                border: 2px solid #e8e8e8;
+                border-radius: 14px;
+                background: #fafafa;
+            }
+            .priority-dispatch-wrap.hidden { display: none; }
+            .priority-dispatch-label {
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: 700;
+                color: #264653;
+                line-height: 1.45;
+            }
+            .priority-dispatch-label input {
+                width: 18px;
+                height: 18px;
+                margin-top: 2px;
+                flex-shrink: 0;
+                accent-color: #ff8c42;
+                cursor: pointer;
+            }
             .lalamove-note {
                 font-size: 12px;
                 color: #666;
@@ -515,7 +702,9 @@
                 border-radius: 10px;
                 padding: 10px 14px;
                 line-height: 1.5;
+                margin-top: 12px;
             }
+            .lalamove-note.hidden { display: none; }
 
             /* ── Submit ── */
             .submit-btn { width: 100%; padding: 18px; font-size: 20px; border-radius: 16px; margin-top: 4px; }
@@ -796,69 +985,136 @@
                         </div>
                     </div>
 
-                    <!-- 3. Delivery Info -->
+                    <!-- 3. Delivery & dispatch -->
                     <div class="form-section">
                         <h2 class="form-section-title">
                             <span class="step-num">3</span>
-                            Delivery Info
+                            Delivery &amp; dispatch
                         </h2>
-                        <div class="delivery-toggle">
-                            <div class="delivery-option active" id="opt-delivery" onclick="setDelivery('delivery')">
-                                <span class="opt-icon">🚚</span>Delivery
+                        <p class="delivery-batch-notice">
+                            Freshly baked upon preparation 🍣<br />
+                            To keep quality consistent and deliveries smoother, orders are now dispatched in scheduled batches 😊
+                        </p>
+
+                        <div class="delivery-subheading">How would you like to receive your order?</div>
+                        <div class="fulfillment-grid">
+                            <div
+                                class="fulfillment-card active"
+                                id="opt-fulfill-self"
+                                onclick="setDeliveryFulfillment('self_pickup')"
+                                role="button"
+                                tabindex="0"
+                            >
+                                <span class="fulfill-badge fastest">Fastest</span>
+                                <span class="fulfill-icon">🏪</span>
+                                <div class="fulfill-title">Self Pickup (Recommended for faster claiming)</div>
+                                <div class="fulfill-desc">Pick up from our agreed location after we confirm your slot.</div>
                             </div>
-                            <div class="delivery-option" id="opt-pickup" onclick="setDelivery('pickup')">
-                                <span class="opt-icon">🏪</span>Pickup
+                            <div
+                                class="fulfillment-card"
+                                id="opt-fulfill-rider"
+                                onclick="setDeliveryFulfillment('customer_rider')"
+                                role="button"
+                                tabindex="0"
+                            >
+                                <span class="fulfill-badge recommended">Recommended</span>
+                                <span class="fulfill-icon">🙋</span>
+                                <div class="fulfill-title">Customer will book rider</div>
+                                <div class="fulfill-desc">You arrange Lalamove or your preferred rider; we hand off ready for pickup.</div>
+                            </div>
+                            <div
+                                class="fulfillment-card"
+                                id="opt-fulfill-sc"
+                                onclick="setDeliveryFulfillment('sc_assist')"
+                                role="button"
+                                tabindex="0"
+                            >
+                                <span class="fulfill-icon">🤝</span>
+                                <div class="fulfill-title">Need help booking? We can assist depending on availability 😊</div>
+                                <div class="fulfill-desc">We may help book a rider when we can — not guaranteed during peak hours.</div>
                             </div>
                         </div>
-                        <div id="addr-group" class="addr-group">
-                            <div class="form-group">
-                                <label for="c-address">Delivery Address <span class="req">*</span></label>
-                                <input type="text" id="c-address" placeholder="Street, Barangay, City" autocomplete="street-address" />
-                                <p class="field-error" id="addr-err">Please enter your delivery address.</p>
-                            </div>
-                            <div class="form-group">
-                                <label>Delivery Type <span class="req">*</span></label>
-                                <div class="delivery-priority-toggle">
-                                    <div class="priority-option active" id="opt-regular" onclick="setDeliveryPriority('regular')">
-                                        <span class="priority-icon">🛵</span>
-                                        <span class="priority-name">Regular</span>
-                                        <span class="priority-desc">Standard delivery</span>
+
+                        <div id="fulfillment-details-block">
+                            <div id="pickup-handoff-panel" class="pickup-handoff-panel">
+                                <div class="pickup-handoff-title">Pickup / handoff details</div>
+                                <p class="pickup-handoff-intro">
+                                    Use these when you pick up or when booking your rider in the app (pin / meetup).
+                                </p>
+                                <div class="pickup-handoff-rows">
+                                    <div class="pickup-handoff-row">
+                                        <span class="ph-label">Address</span>
+                                        Ilugin Open Basketball Court
                                     </div>
-                                    <div class="priority-option" id="opt-priority" onclick="setDeliveryPriority('priority')">
-                                        <span class="priority-icon">⚡</span>
-                                        <span class="priority-name">Priority</span>
-                                        <span class="priority-desc">Faster · higher cost</span>
+                                    <div class="pickup-handoff-row">
+                                        <span class="ph-label">Contact name</span>
+                                        David Apostol
+                                    </div>
+                                    <div class="pickup-handoff-row">
+                                        <span class="ph-label">Contact number</span>
+                                        <a href="tel:+639165116554">09165116554</a>
                                     </div>
                                 </div>
-                                <p class="lalamove-note">🚗 We use <strong>Lalamove</strong> for deliveries. Delivery fee is shouldered by the buyer and will be coordinated separately.</p>
+                            </div>
+                            <div id="customer-address-panel" class="customer-address-panel hidden">
+                                <div class="form-group">
+                                    <label for="c-address">Your delivery address <span class="req">*</span></label>
+                                    <input type="text" id="c-address" placeholder="Street, Barangay, City" autocomplete="street-address" />
+                                    <p class="field-error" id="addr-err">Please enter your delivery address.</p>
+                                </div>
+                            </div>
+                            <p class="lalamove-note hidden" id="sc-assist-note">
+                                🚗 For booking assistance we typically use <strong>Lalamove</strong> (or similar). Delivery fee is shouldered by the buyer and coordinated after we confirm your order.
+                            </p>
+                        </div>
+
+                        <div class="priority-dispatch-wrap hidden" id="priority-dispatch-wrap">
+                            <label class="priority-dispatch-label" for="priority-dispatch">
+                                <input type="checkbox" id="priority-dispatch" onchange="togglePriorityDispatch()" />
+                                <span>⚡ Priority Dispatch (+₱49)</span>
+                            </label>
+                            <p class="delivery-helper tight">
+                                For selected nearby areas only. Subject to kitchen and rider availability.
+                            </p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="c-date">Preferred date <span class="req">*</span></label>
+                            <input type="date" id="c-date" />
+                            <p class="field-error" id="date-err">Please select a preferred date.</p>
+                        </div>
+
+                        <span class="dispatch-window-label">Preferred Dispatch Window <span class="req">*</span></span>
+                        <div id="dispatch-window-wrap" class="dispatch-window-grid">
+                            <div
+                                class="dispatch-window-card"
+                                id="opt-window-11"
+                                onclick="setDispatchWindow('11-13')"
+                                role="button"
+                                tabindex="0"
+                            >
+                                <div class="dw-main">11AM–1PM</div>
+                                <div class="dw-sub">Dispatch window</div>
+                            </div>
+                            <div
+                                class="dispatch-window-card"
+                                id="opt-window-15"
+                                onclick="setDispatchWindow('15-17')"
+                                role="button"
+                                tabindex="0"
+                            >
+                                <div class="dw-main">3PM–5PM</div>
+                                <div class="dw-sub">Dispatch window</div>
                             </div>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="c-date">Preferred Date <span class="req">*</span></label>
-                                <input type="date" id="c-date" />
-                                <p class="field-error" id="date-err">Please select a preferred date.</p>
-                            </div>
-                            <div class="form-group">
-                                <label for="c-time">Dispatch Time <span class="req">*</span></label>
-                                <select id="c-time">
-                                    <option value="">Select a time slot</option>
-                                    <option value="8:00 AM">8:00 AM</option>
-                                    <option value="9:00 AM">9:00 AM</option>
-                                    <option value="10:00 AM">10:00 AM</option>
-                                    <option value="11:00 AM">11:00 AM</option>
-                                    <option value="12:00 PM">12:00 PM</option>
-                                    <option value="1:00 PM">1:00 PM</option>
-                                    <option value="2:00 PM">2:00 PM</option>
-                                    <option value="3:00 PM">3:00 PM</option>
-                                    <option value="4:00 PM">4:00 PM</option>
-                                    <option value="5:00 PM">5:00 PM</option>
-                                    <option value="6:00 PM">6:00 PM</option>
-                                </select>
-                                <p class="field-error" id="time-err">Please select a dispatch time.</p>
-                                <p style="font-size:12px;color:#888;margin-top:6px;line-height:1.5;">⏰ This is your <strong>dispatch time</strong> — when your order leaves us. Please order at least <strong>2 hours in advance</strong> to secure your slot.</p>
-                            </div>
-                        </div>
+                        <p class="delivery-helper">
+                            Arrival time may vary depending on rider availability, traffic, and distance po 😊
+                        </p>
+                        <p class="field-error" id="dispatch-window-err">Please select a dispatch window.</p>
+                        <p class="delivery-helper flex-note">
+                            Need a different dispatch time? 😊 You may leave your preferred time in the special instructions section. Subject to availability po.
+                        </p>
+                        <!-- Supabase (optional): delivery_fulfillment text, dispatch_window text, priority_dispatch boolean -->
                     </div>
 
                     <!-- 4. Special Requests -->
@@ -892,7 +1148,7 @@
                         <span class="summary-total-label">Total</span>
                         <span class="summary-total-amount" id="summary-total">₱0</span>
                     </div>
-                    <p class="summary-note">* Delivery fee not included. We'll coordinate after confirming your order.</p>
+                    <p class="summary-note">* Rider delivery fee not included when you book your own rider. We’ll confirm dispatch window and details after your order.</p>
                 </div>
             </div>
         </div>
@@ -988,6 +1244,11 @@
             ];
 
             const BOX_PACKAGING_PRICE = { solo: 15, duo: 20, party: 25 };
+            const DISPATCH_WINDOW_LABEL = {
+                '11-13': '11AM–1PM Dispatch',
+                '15-17': '3PM–5PM Dispatch',
+            };
+            const PRIORITY_DISPATCH_FEE = 49;
             const FIRST_ORDER_PROMO_TRAY_DISCOUNT = 50;
             function getBoxPackagingPrice(trayId) {
                 return BOX_PACKAGING_PRICE[trayId] || 0;
@@ -1023,8 +1284,13 @@
             // ── State ──────────────────────────────────────────────────
             let cart = [];
             let noriQty = 0;
-            let deliveryType = 'delivery';
-            let deliveryPriority = 'regular';
+            /** @type {'self_pickup'|'customer_rider'|'sc_assist'} */
+            let deliveryFulfillment = 'self_pickup';
+            /** Synced for DB: pickup | delivery */
+            let deliveryType = 'pickup';
+            /** @type {null|'11-13'|'15-17'} */
+            let dispatchWindow = null;
+            let priorityDispatch = false;
             let picking = { flavorId: null, trayId: null, trayPrice: null, addonId: 'none' };
 
             // ── Picker ─────────────────────────────────────────────────
@@ -1170,9 +1436,15 @@
                 updateSummary();
             }
 
+            function getPriorityDispatchFee() {
+                if (!priorityDispatch) return 0;
+                if (deliveryFulfillment !== 'sc_assist') return 0;
+                return PRIORITY_DISPATCH_FEE;
+            }
+
             // ── Summary ────────────────────────────────────────────────
             function getTotal() {
-                return cart.reduce((sum, i) => sum + getTrayLineTotal(i), 0) + noriQty * 35;
+                return cart.reduce((sum, i) => sum + getTrayLineTotal(i), 0) + noriQty * 35 + getPriorityDispatchFee();
             }
 
             function updateSummary() {
@@ -1231,22 +1503,78 @@
                         </div>`;
                 }
 
+                const pdFee = getPriorityDispatchFee();
+                if (pdFee > 0) {
+                    html += `
+                        <div class="summary-item">
+                            <div class="summary-item-main">
+                                <div class="summary-item-left">
+                                    <div class="summary-item-name">⚡ Priority Dispatch</div>
+                                    <div class="summary-item-sub">Add-on (nearby / availability)</div>
+                                </div>
+                                <div class="summary-item-price">₱${pdFee.toLocaleString()}</div>
+                            </div>
+                        </div>`;
+                }
+
                 body.innerHTML  = html;
                 total.textContent = '₱' + getTotal().toLocaleString();
             }
 
-            // ── Delivery toggle ────────────────────────────────────────
-            function setDelivery(type) {
-                deliveryType = type;
-                document.getElementById('opt-delivery').classList.toggle('active', type === 'delivery');
-                document.getElementById('opt-pickup').classList.toggle('active', type === 'pickup');
-                document.getElementById('addr-group').classList.toggle('hidden', type === 'pickup');
+            function getHandoffAddressForOrder() {
+                return [
+                    'Ilugin Open Basketball Court',
+                    'Contact name: David Apostol',
+                    'Contact number: 09165116554',
+                ].join('\n');
             }
 
-            function setDeliveryPriority(type) {
-                deliveryPriority = type;
-                document.getElementById('opt-regular').classList.toggle('active', type === 'regular');
-                document.getElementById('opt-priority').classList.toggle('active', type === 'priority');
+            function getSubmittedDeliveryAddress() {
+                if (deliveryFulfillment === 'sc_assist') {
+                    const v = document.getElementById('c-address').value.trim();
+                    return v || null;
+                }
+                if (deliveryFulfillment === 'self_pickup' || deliveryFulfillment === 'customer_rider') {
+                    return getHandoffAddressForOrder();
+                }
+                return null;
+            }
+
+            function setDeliveryFulfillment(code) {
+                deliveryFulfillment = code;
+                deliveryType = code === 'self_pickup' ? 'pickup' : 'delivery';
+                document.getElementById('opt-fulfill-self').classList.toggle('active', code === 'self_pickup');
+                document.getElementById('opt-fulfill-rider').classList.toggle('active', code === 'customer_rider');
+                document.getElementById('opt-fulfill-sc').classList.toggle('active', code === 'sc_assist');
+                document.getElementById('pickup-handoff-panel').classList.toggle('hidden', code === 'sc_assist');
+                document.getElementById('customer-address-panel').classList.toggle('hidden', code !== 'sc_assist');
+                document.getElementById('sc-assist-note').classList.toggle('hidden', code !== 'sc_assist');
+                document.getElementById('priority-dispatch-wrap').classList.toggle('hidden', code !== 'sc_assist');
+                if (code !== 'sc_assist') {
+                    priorityDispatch = false;
+                    const cb = document.getElementById('priority-dispatch');
+                    if (cb) cb.checked = false;
+                }
+                updateSummary();
+            }
+
+            function setDispatchWindow(w) {
+                dispatchWindow = w;
+                document.getElementById('opt-window-11').classList.toggle('active', w === '11-13');
+                document.getElementById('opt-window-15').classList.toggle('active', w === '15-17');
+                document.getElementById('dispatch-window-wrap').classList.remove('dispatch-window-error');
+                document.getElementById('dispatch-window-err').classList.remove('show');
+                updateSummary();
+            }
+
+            function togglePriorityDispatch() {
+                priorityDispatch = document.getElementById('priority-dispatch').checked;
+                updateSummary();
+            }
+
+            function showDispatchWindowErr(show) {
+                document.getElementById('dispatch-window-wrap').classList.toggle('dispatch-window-error', show);
+                document.getElementById('dispatch-window-err').classList.toggle('show', show);
             }
 
             // ── Validation ─────────────────────────────────────────────
@@ -1272,7 +1600,7 @@
                 showErr('c-phone', 'phone-err', !phoneOk);
                 if (!phoneOk) ok = false;
 
-                if (deliveryType === 'delivery') {
+                if (deliveryFulfillment === 'sc_assist') {
                     const addr = document.getElementById('c-address').value.trim();
                     showErr('c-address', 'addr-err', !addr);
                     if (!addr) ok = false;
@@ -1282,9 +1610,12 @@
                 showErr('c-date', 'date-err', !date);
                 if (!date) ok = false;
 
-                const time = document.getElementById('c-time').value;
-                showErr('c-time', 'time-err', !time);
-                if (!time) ok = false;
+                if (!dispatchWindow) {
+                    showDispatchWindowErr(true);
+                    ok = false;
+                } else {
+                    showDispatchWindowErr(false);
+                }
 
                 return ok;
             }
@@ -1334,6 +1665,24 @@
                     });
                 }
 
+                const pdFee = getPriorityDispatchFee();
+                if (pdFee > 0) {
+                    items.push({
+                        flavor: 'fee',
+                        flavorLabel: 'Service',
+                        trayId: 'priority_dispatch',
+                        trayName: 'Priority Dispatch',
+                        basePrice: pdFee,
+                        addonId: 'none',
+                        addonLabel: 'None',
+                        addonPrice: 0,
+                        unitPrice: pdFee,
+                        qty: 1,
+                        subtotal: pdFee,
+                        promo_discount: 0,
+                    });
+                }
+
                 const record = {
                     id: orderId,
                     status: 'pending',
@@ -1345,11 +1694,15 @@
                     customer_phone:     document.getElementById('c-phone').value.trim(),
                     customer_messenger: document.getElementById('c-messenger').value.trim() || null,
                     delivery_type:      deliveryType,
-                    delivery_priority:  deliveryType === 'delivery' ? deliveryPriority : null,
-                    delivery_address:   deliveryType === 'delivery'
-                        ? document.getElementById('c-address').value.trim() : null,
+                    delivery_priority:  deliveryType === 'delivery'
+                        ? (priorityDispatch ? 'priority' : 'regular')
+                        : null,
+                    delivery_address:   getSubmittedDeliveryAddress(),
                     preferred_date:     document.getElementById('c-date').value,
-                    preferred_time:     document.getElementById('c-time').value || 'Any time',
+                    preferred_time:     DISPATCH_WINDOW_LABEL[dispatchWindow] || '',
+                    delivery_fulfillment: deliveryFulfillment,
+                    dispatch_window:      dispatchWindow,
+                    priority_dispatch:    priorityDispatch,
                     notes:              document.getElementById('c-notes').value.trim() || null,
                 };
 
@@ -1385,11 +1738,17 @@
                     const el = document.getElementById(id);
                     if (el) el.value = '';
                 });
-                document.getElementById('c-time').value = '';
                 document.getElementById('c-date').value = '';
 
-                setDelivery('delivery');
-                setDeliveryPriority('regular');
+                setDeliveryFulfillment('self_pickup');
+                dispatchWindow = null;
+                document.getElementById('opt-window-11').classList.remove('active');
+                document.getElementById('opt-window-15').classList.remove('active');
+                showDispatchWindowErr(false);
+                const pdc = document.getElementById('priority-dispatch');
+                if (pdc) pdc.checked = false;
+                priorityDispatch = false;
+
                 updateSummary();
 
                 const btn = document.getElementById('submit-btn');
