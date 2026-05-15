@@ -626,12 +626,18 @@
             .dispatch-window-grid {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
-                gap: 10px;
+                gap: 12px;
                 margin-bottom: 8px;
                 padding: 4px;
                 border-radius: 16px;
                 border: 2px solid transparent;
                 transition: border-color 0.2s, background 0.2s;
+            }
+            .dispatch-window-col {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                min-width: 0;
             }
             .dispatch-window-grid.dispatch-window-error {
                 border-color: #e74c3c;
@@ -651,6 +657,45 @@
                 border-color: #ff8c42;
                 background: #fff9f5;
                 box-shadow: 0 2px 10px rgba(255, 140, 66, 0.2);
+            }
+            .dispatch-window-card.disabled {
+                opacity: 0.45;
+                cursor: not-allowed;
+                pointer-events: none;
+                background: #f5f5f5;
+                border-color: #e8e8e8;
+            }
+            .dispatch-window-card.disabled:hover { border-color: #e8e8e8; }
+            .dispatch-window-card.disabled .dw-main,
+            .dispatch-window-card.disabled .dw-sub { color: #aaa; }
+            .dispatch-window-cutoff {
+                display: flex;
+                align-items: flex-start;
+                gap: 8px;
+                padding: 10px 12px;
+                background: linear-gradient(135deg, #fff5f5 0%, #fff0eb 100%);
+                border: 2px solid #f5b7b1;
+                border-left: 3px solid #e74c3c;
+                border-radius: 10px;
+                box-shadow: 0 2px 6px rgba(231, 76, 60, 0.1);
+            }
+            .dispatch-window-cutoff.hidden { display: none; }
+            .dispatch-window-cutoff-icon {
+                flex-shrink: 0;
+                font-size: 16px;
+                line-height: 1.35;
+            }
+            .dispatch-window-cutoff-text {
+                flex: 1;
+                min-width: 0;
+                font-size: 12px;
+                font-weight: 600;
+                color: #c0392b;
+                line-height: 1.45;
+            }
+            .dispatch-window-cutoff-text strong {
+                font-weight: 700;
+                color: #a93226;
             }
             .dispatch-window-card .dw-main {
                 font-size: 15px;
@@ -1086,25 +1131,41 @@
 
                         <span class="dispatch-window-label">Preferred Dispatch Window <span class="req">*</span></span>
                         <div id="dispatch-window-wrap" class="dispatch-window-grid">
-                            <div
-                                class="dispatch-window-card"
-                                id="opt-window-11"
-                                onclick="setDispatchWindow('11-13')"
-                                role="button"
-                                tabindex="0"
-                            >
-                                <div class="dw-main">11AM–1PM</div>
-                                <div class="dw-sub">Dispatch window</div>
+                            <div class="dispatch-window-col">
+                                <div
+                                    class="dispatch-window-card"
+                                    id="opt-window-11"
+                                    onclick="setDispatchWindow('11-13')"
+                                    role="button"
+                                    tabindex="0"
+                                >
+                                    <div class="dw-main">11AM–1PM</div>
+                                    <div class="dw-sub">Dispatch window</div>
+                                </div>
+                                <div class="dispatch-window-cutoff hidden" id="cutoff-notice-11" role="status">
+                                    <span class="dispatch-window-cutoff-icon" aria-hidden="true">⏰</span>
+                                    <span class="dispatch-window-cutoff-text">
+                                        Same-day cutoff: order by <strong>11:00 AM</strong>
+                                    </span>
+                                </div>
                             </div>
-                            <div
-                                class="dispatch-window-card"
-                                id="opt-window-15"
-                                onclick="setDispatchWindow('15-17')"
-                                role="button"
-                                tabindex="0"
-                            >
-                                <div class="dw-main">3PM–5PM</div>
-                                <div class="dw-sub">Dispatch window</div>
+                            <div class="dispatch-window-col">
+                                <div
+                                    class="dispatch-window-card"
+                                    id="opt-window-15"
+                                    onclick="setDispatchWindow('15-17')"
+                                    role="button"
+                                    tabindex="0"
+                                >
+                                    <div class="dw-main">3PM–5PM</div>
+                                    <div class="dw-sub">Dispatch window</div>
+                                </div>
+                                <div class="dispatch-window-cutoff hidden" id="cutoff-notice-15" role="status">
+                                    <span class="dispatch-window-cutoff-icon" aria-hidden="true">⏰</span>
+                                    <span class="dispatch-window-cutoff-text">
+                                        Same-day cutoff: order by <strong>3:00 PM</strong>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         <p class="delivery-helper">
@@ -1248,6 +1309,60 @@
                 '11-13': '11AM–1PM Dispatch',
                 '15-17': '3PM–5PM Dispatch',
             };
+            const DISPATCH_WINDOWS = {
+                '11-13': { startHour: 11, startMinute: 0, card: 'opt-window-11', cutoff: 'cutoff-notice-11' },
+                '15-17': { startHour: 15, startMinute: 0, card: 'opt-window-15', cutoff: 'cutoff-notice-15' },
+            };
+            function getLocalDateString(d = new Date()) {
+                const y = d.getFullYear();
+                const m = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                return `${y}-${m}-${day}`;
+            }
+
+            function setDefaultPreferredDate() {
+                const today = getLocalDateString();
+                const dateEl = document.getElementById('c-date');
+                dateEl.setAttribute('min', today);
+                dateEl.value = today;
+            }
+
+            function getDispatchWindowStart(windowId, dateStr) {
+                const cfg = DISPATCH_WINDOWS[windowId];
+                if (!cfg || !dateStr) return null;
+                const [y, mo, day] = dateStr.split('-').map(Number);
+                return new Date(y, mo - 1, day, cfg.startHour, cfg.startMinute, 0, 0);
+            }
+
+            function isDispatchWindowPastCutoff(windowId, dateStr) {
+                if (!dateStr || dateStr !== getLocalDateString()) return false;
+                const cutoff = getDispatchWindowStart(windowId, dateStr);
+                if (!cutoff) return false;
+                return Date.now() >= cutoff.getTime();
+            }
+
+            function updateDispatchWindowAvailability() {
+                const dateStr = document.getElementById('c-date').value;
+                let selectedDisabled = false;
+
+                Object.keys(DISPATCH_WINDOWS).forEach(id => {
+                    const cfg = DISPATCH_WINDOWS[id];
+                    const el = document.getElementById(cfg.card);
+                    const cutoffEl = document.getElementById(cfg.cutoff);
+                    const disabled = isDispatchWindowPastCutoff(id, dateStr);
+                    el.classList.toggle('disabled', disabled);
+                    el.setAttribute('aria-disabled', disabled ? 'true' : 'false');
+                    if (cutoffEl) cutoffEl.classList.toggle('hidden', !disabled);
+                    if (disabled && dispatchWindow === id) selectedDisabled = true;
+                });
+
+                if (selectedDisabled) {
+                    dispatchWindow = null;
+                    document.getElementById('opt-window-11').classList.remove('active');
+                    document.getElementById('opt-window-15').classList.remove('active');
+                    showDispatchWindowErr(false);
+                }
+            }
             const PRIORITY_DISPATCH_FEE = 49;
             const FIRST_ORDER_PROMO_TRAY_DISCOUNT = 50;
             function getBoxPackagingPrice(trayId) {
@@ -1559,6 +1674,8 @@
             }
 
             function setDispatchWindow(w) {
+                const dateStr = document.getElementById('c-date').value;
+                if (isDispatchWindowPastCutoff(w, dateStr)) return;
                 dispatchWindow = w;
                 document.getElementById('opt-window-11').classList.toggle('active', w === '11-13');
                 document.getElementById('opt-window-15').classList.toggle('active', w === '15-17');
@@ -1610,7 +1727,7 @@
                 showErr('c-date', 'date-err', !date);
                 if (!date) ok = false;
 
-                if (!dispatchWindow) {
+                if (!dispatchWindow || isDispatchWindowPastCutoff(dispatchWindow, date)) {
                     showDispatchWindowErr(true);
                     ok = false;
                 } else {
@@ -1738,7 +1855,7 @@
                     const el = document.getElementById(id);
                     if (el) el.value = '';
                 });
-                document.getElementById('c-date').value = '';
+                setDefaultPreferredDate();
 
                 setDeliveryFulfillment('self_pickup');
                 dispatchWindow = null;
@@ -1748,6 +1865,7 @@
                 const pdc = document.getElementById('priority-dispatch');
                 if (pdc) pdc.checked = false;
                 priorityDispatch = false;
+                updateDispatchWindowAvailability();
 
                 updateSummary();
 
@@ -1763,8 +1881,10 @@
             // ── Init ───────────────────────────────────────────────────
             document.addEventListener('DOMContentLoaded', () => {
                 updateSummary();
-                const today = new Date().toISOString().split('T')[0];
-                document.getElementById('c-date').setAttribute('min', today);
+                const dateEl = document.getElementById('c-date');
+                setDefaultPreferredDate();
+                dateEl.addEventListener('change', updateDispatchWindowAvailability);
+                updateDispatchWindowAvailability();
                 startPicker();
             });
         </script>
