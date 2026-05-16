@@ -1975,8 +1975,7 @@
                     );
                 }
                 if (
-                    o.delivery_type === "delivery" &&
-                    !selfBook &&
+                    o.delivery_fulfillment === "sc_assist" &&
                     (o.priority_dispatch === true ||
                         o.delivery_priority === "priority")
                 ) {
@@ -2141,8 +2140,7 @@
                     tagParts.push(`<span class="${ffClass}">${ff}</span>`);
                 }
                 if (
-                    o.delivery_type === "delivery" &&
-                    !selfBook &&
+                    o.delivery_fulfillment === "sc_assist" &&
                     (o.priority_dispatch === true ||
                         o.delivery_priority === "priority")
                 ) {

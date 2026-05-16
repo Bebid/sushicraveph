@@ -784,6 +784,7 @@
                 margin-top: 12px;
             }
             .lalamove-note.hidden { display: none; }
+            #sc-assist-arrival-note.hidden { display: none; }
 
             /* ── Submit ── */
             .submit-btn { width: 100%; padding: 18px; font-size: 20px; border-radius: 16px; margin-top: 4px; }
@@ -912,7 +913,7 @@
                 <div class="order-form-main">
 
                     <!-- 1. Your Order -->
-                    <div class="form-section">
+                    <div class="form-section" id="order-section-cart">
                         <h2 class="form-section-title">
                             <span class="step-num">1</span>
                             Your Order
@@ -1150,10 +1151,10 @@
                         <div class="priority-dispatch-wrap hidden" id="priority-dispatch-wrap">
                             <label class="priority-dispatch-label" for="priority-dispatch">
                                 <input type="checkbox" id="priority-dispatch" onchange="togglePriorityDispatch()" />
-                                <span>⚡ Priority Dispatch (+₱49)</span>
+                                <span>⚡ Priority dispatch</span>
                             </label>
                             <p class="delivery-helper tight">
-                                For selected nearby areas only. Subject to kitchen and rider availability.
+                                The faster option, with an extra charge.
                             </p>
                         </div>
 
@@ -1202,7 +1203,7 @@
                                 </div>
                             </div>
                         </div>
-                        <p class="delivery-helper">
+                        <p class="delivery-helper hidden" id="sc-assist-arrival-note">
                             Arrival time may vary depending on rider availability, traffic, and distance po 😊
                         </p>
                         <p class="field-error" id="dispatch-window-err">Please select a dispatch window.</p>
@@ -1397,7 +1398,6 @@
                     showDispatchWindowErr(false);
                 }
             }
-            const PRIORITY_DISPATCH_FEE = 49;
             const FIRST_ORDER_PROMO_TRAY_DISCOUNT = 50;
             function getBoxPackagingPrice(trayId) {
                 return BOX_PACKAGING_PRICE[trayId] || 0;
@@ -1631,15 +1631,9 @@
                 updateSummary();
             }
 
-            function getPriorityDispatchFee() {
-                if (!priorityDispatch) return 0;
-                if (deliveryFulfillment !== 'sc_assist') return 0;
-                return PRIORITY_DISPATCH_FEE;
-            }
-
             // ── Summary ────────────────────────────────────────────────
             function getTotal() {
-                return cart.reduce((sum, i) => sum + trayLineTotalWithQty(i), 0) + noriQty * 35 + getPriorityDispatchFee();
+                return cart.reduce((sum, i) => sum + trayLineTotalWithQty(i), 0) + noriQty * 35;
             }
 
             function updateSummary() {
@@ -1699,16 +1693,14 @@
                         </div>`;
                 }
 
-                const pdFee = getPriorityDispatchFee();
-                if (pdFee > 0) {
+                if (priorityDispatch) {
                     html += `
                         <div class="summary-item">
                             <div class="summary-item-main">
                                 <div class="summary-item-left">
-                                    <div class="summary-item-name">⚡ Priority Dispatch</div>
-                                    <div class="summary-item-sub">Add-on (nearby / availability)</div>
+                                    <div class="summary-item-name">⚡ Priority dispatch</div>
+                                    <div class="summary-item-sub">Faster option — extra charge applies</div>
                                 </div>
-                                <div class="summary-item-price">₱${pdFee.toLocaleString()}</div>
                             </div>
                         </div>`;
                 }
@@ -1745,6 +1737,7 @@
                 document.getElementById('pickup-handoff-panel').classList.toggle('hidden', code === 'sc_assist');
                 document.getElementById('customer-address-panel').classList.toggle('hidden', code !== 'sc_assist');
                 document.getElementById('sc-assist-note').classList.toggle('hidden', code !== 'sc_assist');
+                document.getElementById('sc-assist-arrival-note').classList.toggle('hidden', code !== 'sc_assist');
                 document.getElementById('priority-dispatch-wrap').classList.toggle('hidden', code !== 'sc_assist');
                 if (code !== 'sc_assist') {
                     priorityDispatch = false;
@@ -1781,40 +1774,65 @@
                 document.getElementById(errId).classList.toggle('show', show);
             }
 
+            function scrollToValidationTarget(el) {
+                if (!el) return;
+                const run = () => {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const focusEl = el.matches('input, textarea, select, button')
+                        ? el
+                        : el.querySelector(
+                            'input:not([type="hidden"]), textarea, select, button.btn-add-tray',
+                        );
+                    if (focusEl && typeof focusEl.focus === 'function') {
+                        setTimeout(() => focusEl.focus({ preventScroll: true }), 400);
+                    }
+                };
+                requestAnimationFrame(() => requestAnimationFrame(run));
+            }
+
             function validate() {
                 let ok = true;
+                let firstErrorEl = null;
+                const flagError = (el) => {
+                    ok = false;
+                    if (!firstErrorEl && el) firstErrorEl = el;
+                };
 
                 if (cart.length === 0) {
+                    cancelPicker();
                     document.getElementById('tray-error').classList.add('show');
-                    ok = false;
+                    flagError(document.getElementById('order-section-cart'));
+                } else {
+                    document.getElementById('tray-error').classList.remove('show');
                 }
 
                 const name = document.getElementById('c-name').value.trim();
                 showErr('c-name', 'name-err', !name);
-                if (!name) ok = false;
+                if (!name) flagError(document.getElementById('c-name'));
 
                 const phone  = document.getElementById('c-phone').value.trim();
                 const phoneOk = /^[0-9+\-()\s]{7,15}$/.test(phone);
                 showErr('c-phone', 'phone-err', !phoneOk);
-                if (!phoneOk) ok = false;
+                if (!phoneOk) flagError(document.getElementById('c-phone'));
 
                 if (deliveryFulfillment === 'sc_assist') {
                     const addr = document.getElementById('c-address').value.trim();
                     showErr('c-address', 'addr-err', !addr);
-                    if (!addr) ok = false;
+                    if (!addr) flagError(document.getElementById('c-address'));
                 }
 
                 const date = document.getElementById('c-date').value;
                 showErr('c-date', 'date-err', !date);
-                if (!date) ok = false;
+                if (!date) flagError(document.getElementById('c-date'));
 
                 if (!dispatchWindow || isDispatchWindowPastCutoff(dispatchWindow, date)) {
                     showDispatchWindowErr(true);
-                    ok = false;
+                    flagError(document.getElementById('dispatch-window-wrap'));
                 } else {
                     showDispatchWindowErr(false);
                 }
 
+                if (!ok && firstErrorEl) scrollToValidationTarget(firstErrorEl);
                 return ok;
             }
 
@@ -1864,24 +1882,6 @@
                     });
                 }
 
-                const pdFee = getPriorityDispatchFee();
-                if (pdFee > 0) {
-                    items.push({
-                        flavor: 'fee',
-                        flavorLabel: 'Service',
-                        trayId: 'priority_dispatch',
-                        trayName: 'Priority Dispatch',
-                        basePrice: pdFee,
-                        addonId: 'none',
-                        addonLabel: 'None',
-                        addonPrice: 0,
-                        unitPrice: pdFee,
-                        qty: 1,
-                        subtotal: pdFee,
-                        promo_discount: 0,
-                    });
-                }
-
                 const record = {
                     id: orderId,
                     status: 'pending',
@@ -1893,15 +1893,15 @@
                     customer_phone:     document.getElementById('c-phone').value.trim(),
                     customer_messenger: document.getElementById('c-messenger').value.trim() || null,
                     delivery_type:      deliveryType,
-                    delivery_priority:  deliveryType === 'delivery'
-                        ? (priorityDispatch ? 'priority' : 'regular')
-                        : null,
+                    delivery_priority:  deliveryFulfillment === 'sc_assist' && priorityDispatch
+                        ? 'priority'
+                        : (deliveryType === 'delivery' ? 'regular' : null),
                     delivery_address:   getSubmittedDeliveryAddress(),
                     preferred_date:     document.getElementById('c-date').value,
                     preferred_time:     DISPATCH_WINDOW_LABEL[dispatchWindow] || '',
                     delivery_fulfillment: deliveryFulfillment,
                     dispatch_window:      dispatchWindow,
-                    priority_dispatch:    priorityDispatch,
+                    priority_dispatch:    deliveryFulfillment === 'sc_assist' && priorityDispatch,
                     notes:              document.getElementById('c-notes').value.trim() || null,
                 };
 
@@ -1912,6 +1912,7 @@
                     btn.disabled    = false;
                     btn.textContent = 'Place Order 🍣';
                     errEl.style.display = 'block';
+                    scrollToValidationTarget(errEl);
                     return;
                 }
 
