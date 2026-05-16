@@ -1633,6 +1633,18 @@
                 return true;
             }
 
+            /** Emoji for order line (matches storefront). */
+            function flavorEmojiForItem(item) {
+                if (!item) return "";
+                const fid = item.flavor;
+                if (fid === "kani") return "🥭";
+                if (fid === "tuna") return "🐟";
+                if (item.trayId === "nori") return "🌿";
+                if (fid === "fee" && item.trayId === "priority_dispatch")
+                    return "⚡";
+                return "";
+            }
+
             // ── Auth ───────────────────────────────────────────────────
             async function initAuth() {
                 const {
@@ -1864,8 +1876,9 @@
                 if (!Array.isArray(items) || items.length === 0) return "—";
                 return items
                     .map((i) => {
+                        const fe = flavorEmojiForItem(i);
                         let s =
-                            `${Number(i.qty) || 1}× ${i.flavorLabel ? i.flavorLabel + " " : ""}${i.trayName || ""}`.trim();
+                            `${Number(i.qty) || 1}× ${fe ? fe + " " : ""}${i.flavorLabel ? i.flavorLabel + " " : ""}${i.trayName || ""}`.trim();
                         if (i.inBox) {
                             const bp = Number(i.boxPrice);
                             const iq = Number(i.qty) || 1;
@@ -1949,16 +1962,21 @@
             }
 
             function buildOrderTypeTagsHtml(o) {
-                const parts = [
-                    `<span class="delivery-badge ${esc(o.delivery_type)}">${o.delivery_type === "delivery" ? "🚚 Delivery" : "🏪 Pickup"}</span>`,
-                ];
-                if (o.delivery_fulfillment === "customer_rider") {
+                const parts = [];
+                const selfBook = o.delivery_fulfillment === "customer_rider";
+                if (!selfBook) {
+                    parts.push(
+                        `<span class="delivery-badge ${esc(o.delivery_type)}">${o.delivery_type === "delivery" ? "🚚 Delivery" : "🏪 Pickup"}</span>`,
+                    );
+                }
+                if (selfBook) {
                     parts.push(
                         '<span class="fulfill-mini-badge self-booking">🙋 Self booking</span>',
                     );
                 }
                 if (
                     o.delivery_type === "delivery" &&
+                    !selfBook &&
                     (o.priority_dispatch === true ||
                         o.delivery_priority === "priority")
                 ) {
@@ -2103,9 +2121,13 @@
                     addrEl.textContent = "Pickup — no meet-up details on file";
                 }
 
-                const tagParts = [
-                    `<span class="delivery-badge ${esc(o.delivery_type)}">${o.delivery_type === "delivery" ? "🚚 Delivery" : "🏪 Pickup"}</span>`,
-                ];
+                const tagParts = [];
+                const selfBook = o.delivery_fulfillment === "customer_rider";
+                if (!selfBook) {
+                    tagParts.push(
+                        `<span class="delivery-badge ${esc(o.delivery_type)}">${o.delivery_type === "delivery" ? "🚚 Delivery" : "🏪 Pickup"}</span>`,
+                    );
+                }
                 const ffMap = {
                     customer_rider: "🙋 Self booking",
                 };
@@ -2120,6 +2142,7 @@
                 }
                 if (
                     o.delivery_type === "delivery" &&
+                    !selfBook &&
                     (o.priority_dispatch === true ||
                         o.delivery_priority === "priority")
                 ) {
@@ -2189,6 +2212,11 @@
                             : 0;
                         const promoDp = Number(item.promo_discount) || 0;
                         const lineQty = Number(item.qty) || 1;
+                        const custBits = [];
+                        const fe = flavorEmojiForItem(item);
+                        const itemTitle =
+                            ((item.flavorLabel || "") +
+                                (item.trayName ? " " + item.trayName : "")).trim();
                         if (addonPart) custBits.push(addonPart);
                         if (item.inBox) {
                             custBits.push(
@@ -2207,7 +2235,7 @@
                             : "—";
                         return `
                     <tr>
-                        <td>${esc((item.flavorLabel || "") + (item.trayName ? " " + item.trayName : ""))}</td>
+                        <td>${fe ? fe + " " : ""}${esc(itemTitle)}</td>
                         <td>${esc(cust)}</td>
                         <td style="text-align:right">₱${(item.unitPrice || 0).toLocaleString()}</td>
                         <td style="text-align:center">${lineQty}</td>
