@@ -1865,10 +1865,11 @@
                 return items
                     .map((i) => {
                         let s =
-                            `${i.qty}× ${i.flavorLabel ? i.flavorLabel + " " : ""}${i.trayName || ""}`.trim();
+                            `${Number(i.qty) || 1}× ${i.flavorLabel ? i.flavorLabel + " " : ""}${i.trayName || ""}`.trim();
                         if (i.inBox) {
                             const bp = Number(i.boxPrice);
-                            s += bp > 0 ? ` (box +₱${bp})` : " (box)";
+                            const iq = Number(i.qty) || 1;
+                            s += bp > 0 ? ` (box +₱${(bp * iq).toLocaleString()})` : " (box)";
                         }
                         return s;
                     })
@@ -2187,18 +2188,18 @@
                             ? Number(item.boxPrice) || 0
                             : 0;
                         const promoDp = Number(item.promo_discount) || 0;
-                        const custBits = [];
+                        const lineQty = Number(item.qty) || 1;
                         if (addonPart) custBits.push(addonPart);
                         if (item.inBox) {
                             custBits.push(
                                 boxAmt > 0
-                                    ? `Packed in box (+₱${boxAmt.toLocaleString()})`
+                                    ? `Packed in box (+₱${(boxAmt * lineQty).toLocaleString()})`
                                     : "Packed in box",
                             );
                         }
                         if (promoDp > 0) {
                             custBits.push(
-                                `First order −₱${promoDp.toLocaleString()}`,
+                                `First order −₱${(promoDp * lineQty).toLocaleString()}`,
                             );
                         }
                         const cust = custBits.length
@@ -2209,7 +2210,7 @@
                         <td>${esc((item.flavorLabel || "") + (item.trayName ? " " + item.trayName : ""))}</td>
                         <td>${esc(cust)}</td>
                         <td style="text-align:right">₱${(item.unitPrice || 0).toLocaleString()}</td>
-                        <td style="text-align:center">${item.qty}</td>
+                        <td style="text-align:center">${lineQty}</td>
                         <td style="text-align:right">₱${(item.subtotal || 0).toLocaleString()}</td>
                     </tr>
                 `;

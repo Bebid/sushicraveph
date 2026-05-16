@@ -92,6 +92,7 @@
             .cart-item {
                 display: flex;
                 align-items: center;
+                flex-wrap: wrap;
                 gap: 12px;
                 padding: 12px 14px;
                 background: #f9f7f3;
@@ -102,6 +103,39 @@
             .cart-item-info  { flex: 1; min-width: 0; }
             .cart-item-name  { font-size: 14px; font-weight: 800; color: #264653; }
             .cart-item-meta  { font-size: 12px; color: #888; margin-top: 2px; }
+            .cart-item-right {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex-shrink: 0;
+            }
+            .cart-item-qty {
+                display: flex;
+                align-items: center;
+                gap: 2px;
+            }
+            .cart-item-qty .cart-qty-btn {
+                width: 28px;
+                height: 28px;
+                border: none;
+                background: #e8e8e8;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: 700;
+                line-height: 1;
+                cursor: pointer;
+                color: #264653;
+                padding: 0;
+                transition: background 0.15s;
+            }
+            .cart-item-qty .cart-qty-btn:hover { background: #d8d8d8; }
+            .cart-item-qty .cart-qty-val {
+                min-width: 24px;
+                text-align: center;
+                font-size: 14px;
+                font-weight: 800;
+                color: #264653;
+            }
             .cart-item-price { font-size: 15px; font-weight: 800; color: #264653; flex-shrink: 0; white-space: nowrap; }
             .cart-item-remove {
                 width: 26px; height: 26px;
@@ -1381,12 +1415,22 @@
                 return Math.min(FIRST_ORDER_PROMO_TRAY_DISCOUNT, item.unitPrice);
             }
 
+            function cartLineQty(item) {
+                const n = Number(item.qty);
+                if (!Number.isFinite(n) || n < 1) return 1;
+                return Math.min(99, Math.floor(n));
+            }
+
+            function trayLineTotalWithQty(item) {
+                return getTrayLineTotal(item) * cartLineQty(item);
+            }
+
             function getTrayLineTotal(item) {
                 return item.unitPrice - getTrayLinePromoDiscount(item);
             }
 
             function getPromoDiscountTotal() {
-                return cart.reduce((sum, i) => sum + getTrayLinePromoDiscount(i), 0);
+                return cart.reduce((sum, i) => sum + getTrayLinePromoDiscount(i) * cartLineQty(i), 0);
             }
 
             function updateBoxPackagingHint() {
@@ -1493,7 +1537,7 @@
                 const boxPrice = inBox ? getBoxPackagingPrice(tray.id) : 0;
                 const unitPrice = tray.price + addon.price + boxPrice;
 
-                cart.push({
+                const newLine = {
                     uid:         Date.now().toString(36) + Math.random().toString(36).slice(2,5),
                     flavorId:    flavor.id,
                     flavorLabel: flavor.label,
@@ -1508,7 +1552,20 @@
                     boxPrice,
                     unitPrice,
                     inBox,
-                });
+                    qty:         1,
+                };
+
+                const mergeIdx = cart.findIndex(i =>
+                    i.flavorId === newLine.flavorId &&
+                    i.trayId === newLine.trayId &&
+                    i.addonId === newLine.addonId &&
+                    !!i.inBox === !!newLine.inBox
+                );
+                if (mergeIdx >= 0) {
+                    cart[mergeIdx].qty = Math.min(99, cartLineQty(cart[mergeIdx]) + 1);
+                } else {
+                    cart.push(newLine);
+                }
 
                 cancelPicker();
                 renderCart();
@@ -1522,23 +1579,46 @@
                 updateSummary();
             }
 
+            function changeTrayQty(uid, delta) {
+                const idx = cart.findIndex(x => x.uid === uid);
+                if (idx < 0) return;
+                const next = cartLineQty(cart[idx]) + delta;
+                if (next < 1) {
+                    removeCartItem(uid);
+                    return;
+                }
+                cart[idx].qty = Math.min(99, next);
+                renderCart();
+                updateSummary();
+            }
+
             function renderCart() {
                 const container = document.getElementById('cart-items');
                 if (cart.length === 0) {
                     container.innerHTML = '';
                     return;
                 }
-                container.innerHTML = cart.map(item => `
+                container.innerHTML = cart.map(item => {
+                    const q = cartLineQty(item);
+                    return `
                     <div class="cart-item" id="ci-${item.uid}">
                         <div class="cart-item-emoji">${item.flavorEmoji}</div>
                         <div class="cart-item-info">
                             <div class="cart-item-name">${item.flavorLabel} — ${item.trayName}</div>
-                            <div class="cart-item-meta">${item.addonId !== 'none' ? item.addonLabel : 'No extras'}${item.inBox ? ' · Box (+₱' + item.boxPrice + ')' : ''}${getTrayLinePromoDiscount(item) > 0 ? ' · First order −₱' + getTrayLinePromoDiscount(item) : ''}</div>
+                            <div class="cart-item-meta">${item.addonId !== 'none' ? item.addonLabel : 'No extras'}${item.inBox ? ' · Box (+₱' + item.boxPrice + ')' : ''}${getTrayLinePromoDiscount(item) > 0 ? ' · First order −₱' + getTrayLinePromoDiscount(item) + '/ea' : ''}</div>
                         </div>
-                        <div class="cart-item-price">₱${getTrayLineTotal(item).toLocaleString()}</div>
-                        <button class="cart-item-remove" onclick="removeCartItem('${item.uid}')" aria-label="Remove">×</button>
+                        <div class="cart-item-right">
+                            <div class="cart-item-qty">
+                                <button type="button" class="cart-qty-btn" onclick="changeTrayQty('${item.uid}', -1)" aria-label="Decrease quantity">−</button>
+                                <span class="cart-qty-val">${q}</span>
+                                <button type="button" class="cart-qty-btn" onclick="changeTrayQty('${item.uid}', 1)" aria-label="Increase quantity">+</button>
+                            </div>
+                            <div class="cart-item-price">₱${trayLineTotalWithQty(item).toLocaleString()}</div>
+                            <button type="button" class="cart-item-remove" onclick="removeCartItem('${item.uid}')" aria-label="Remove">×</button>
+                        </div>
                     </div>
-                `).join('');
+                `;
+                }).join('');
 
                 document.getElementById('btn-add-tray').textContent = '+ Add a Tray';
             }
@@ -1559,7 +1639,7 @@
 
             // ── Summary ────────────────────────────────────────────────
             function getTotal() {
-                return cart.reduce((sum, i) => sum + getTrayLineTotal(i), 0) + noriQty * 35 + getPriorityDispatchFee();
+                return cart.reduce((sum, i) => sum + trayLineTotalWithQty(i), 0) + noriQty * 35 + getPriorityDispatchFee();
             }
 
             function updateSummary() {
@@ -1574,25 +1654,26 @@
 
                 let html = cart.map(item => {
                     const promoDisc = getTrayLinePromoDiscount(item);
-                    const lineTotal = getTrayLineTotal(item);
+                    const q = cartLineQty(item);
+                    const lineTotal = getTrayLineTotal(item) * q;
                     const detailRows = [
-                        `<li><span>${item.trayName}</span><span>₱${item.basePrice.toLocaleString()}</span></li>`,
+                        `<li><span>${item.trayName}${q > 1 ? ' × ' + q : ''}</span><span>₱${(item.basePrice * q).toLocaleString()}</span></li>`,
                     ];
                     if (item.addonId !== 'none' && item.addonPrice > 0) {
-                        detailRows.push(`<li><span>${item.addonLabel}</span><span>₱${item.addonPrice.toLocaleString()}</span></li>`);
+                        detailRows.push(`<li><span>${item.addonLabel}</span><span>₱${(item.addonPrice * q).toLocaleString()}</span></li>`);
                     }
                     if (item.inBox && item.boxPrice > 0) {
-                        detailRows.push(`<li><span>Box packaging</span><span>₱${item.boxPrice.toLocaleString()}</span></li>`);
+                        detailRows.push(`<li><span>Box packaging</span><span>₱${(item.boxPrice * q).toLocaleString()}</span></li>`);
                     }
                     if (promoDisc > 0) {
-                        detailRows.push(`<li><span>First order promo</span><span>−₱${promoDisc.toLocaleString()}</span></li>`);
+                        detailRows.push(`<li><span>First order promo</span><span>−₱${(promoDisc * q).toLocaleString()}</span></li>`);
                     }
                     return `
                     <div class="summary-item">
                         <div class="summary-item-main">
                             <div class="summary-item-left">
                                 <div class="summary-item-name">${item.flavorEmoji} ${item.flavorLabel}</div>
-                                <div class="summary-item-sub">${item.trayName} · ${item.trayDims}</div>
+                                <div class="summary-item-sub">${item.trayName} · ${item.trayDims}${q > 1 ? ' · Qty ' + q : ''}</div>
                             </div>
                             <div class="summary-item-price">₱${lineTotal.toLocaleString()}</div>
                         </div>
@@ -1753,6 +1834,7 @@
                 const items = cart.map(item => {
                     const promoDisc = getTrayLinePromoDiscount(item);
                     const lineFinal = item.unitPrice - promoDisc;
+                    const q = cartLineQty(item);
                     return {
                         flavor:      item.flavorId,
                         flavorLabel: item.flavorLabel,
@@ -1763,8 +1845,8 @@
                         addonLabel:  item.addonLabel,
                         addonPrice:  item.addonPrice,
                         unitPrice:   lineFinal,
-                        qty:         1,
-                        subtotal:    lineFinal,
+                        qty:         q,
+                        subtotal:    lineFinal * q,
                         inBox:       !!item.inBox,
                         boxPrice:    item.inBox ? (item.boxPrice || 0) : 0,
                         promo_discount: promoDisc,
