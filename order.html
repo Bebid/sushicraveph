@@ -1161,7 +1161,9 @@
                         <div class="form-group">
                             <label for="c-date">Preferred date <span class="req">*</span></label>
                             <input type="date" id="c-date" />
+                            <p class="delivery-helper tight">Closed Sundays.</p>
                             <p class="field-error" id="date-err">Please select a preferred date.</p>
+                            <p class="field-error" id="date-sunday-err">We're closed on Sundays — please choose another day.</p>
                         </div>
 
                         <span class="dispatch-window-label">Preferred Dispatch Window <span class="req">*</span></span>
@@ -1355,11 +1357,42 @@
                 return `${y}-${m}-${day}`;
             }
 
+            function parseLocalDateString(dateStr) {
+                const [y, mo, day] = dateStr.split('-').map(Number);
+                return new Date(y, mo - 1, day, 12, 0, 0, 0);
+            }
+
+            function isSundayDateStr(dateStr) {
+                if (!dateStr) return false;
+                return parseLocalDateString(dateStr).getDay() === 0;
+            }
+
+            /** First selectable date on or after dateStr (Sundays skipped). */
+            function nextOpenDateString(dateStr) {
+                const cur = parseLocalDateString(dateStr);
+                while (cur.getDay() === 0) cur.setDate(cur.getDate() + 1);
+                return getLocalDateString(cur);
+            }
+
             function setDefaultPreferredDate() {
                 const today = getLocalDateString();
                 const dateEl = document.getElementById('c-date');
                 dateEl.setAttribute('min', today);
-                dateEl.value = today;
+                dateEl.value = nextOpenDateString(today);
+            }
+
+            function onPreferredDateChange() {
+                const dateEl = document.getElementById('c-date');
+                const val = dateEl.value;
+                if (isSundayDateStr(val)) {
+                    dateEl.value = nextOpenDateString(getLocalDateString());
+                    showErr('c-date', 'date-err', false);
+                    showErr('c-date', 'date-sunday-err', true);
+                } else {
+                    showErr('c-date', 'date-sunday-err', false);
+                    if (val) showErr('c-date', 'date-err', false);
+                }
+                updateDispatchWindowAvailability();
             }
 
             function getDispatchWindowStart(windowId, dateStr) {
@@ -1821,9 +1854,12 @@
                     if (!addr) flagError(document.getElementById('c-address'));
                 }
 
-                const date = document.getElementById('c-date').value;
+                const dateEl = document.getElementById('c-date');
+                const date = dateEl.value;
+                const dateSunday = isSundayDateStr(date);
                 showErr('c-date', 'date-err', !date);
-                if (!date) flagError(document.getElementById('c-date'));
+                showErr('c-date', 'date-sunday-err', !!date && dateSunday);
+                if (!date || dateSunday) flagError(dateEl);
 
                 if (!dispatchWindow || isDispatchWindowPastCutoff(dispatchWindow, date)) {
                     showDispatchWindowErr(true);
@@ -1966,7 +2002,7 @@
                 updateSummary();
                 const dateEl = document.getElementById('c-date');
                 setDefaultPreferredDate();
-                dateEl.addEventListener('change', updateDispatchWindowAvailability);
+                dateEl.addEventListener('change', onPreferredDateChange);
                 updateDispatchWindowAvailability();
                 startPicker();
             });
