@@ -774,6 +774,43 @@
                 accent-color: #ff8c42;
                 cursor: pointer;
             }
+            .save-details-wrap {
+                margin: 14px 0 4px;
+                padding: 14px 16px;
+                border: 2px solid #e8e8e8;
+                border-radius: 14px;
+                background: #fafafa;
+            }
+            .save-details-wrap.hidden { display: none; }
+            .save-details-label {
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: 600;
+                color: #264653;
+                line-height: 1.45;
+            }
+            .save-details-label input {
+                width: 18px;
+                height: 18px;
+                margin-top: 2px;
+                flex-shrink: 0;
+                accent-color: #ff8c42;
+                cursor: pointer;
+            }
+            .save-details-link {
+                background: none;
+                border: none;
+                padding: 0;
+                font: inherit;
+                font-size: 12px;
+                color: #e76f51;
+                text-decoration: underline;
+                cursor: pointer;
+            }
+            .save-details-link:hover { color: #c45a40; }
             .lalamove-note {
                 font-size: 12px;
                 color: #666;
@@ -1143,6 +1180,16 @@
                                     <p class="field-error" id="addr-err">Please enter your delivery address.</p>
                                 </div>
                             </div>
+                            <div class="save-details-wrap hidden" id="save-details-wrap">
+                                <label class="save-details-label" for="save-details-check">
+                                    <input type="checkbox" id="save-details-check" />
+                                    <span>Remember my details and delivery address on this device</span>
+                                </label>
+                                <p class="delivery-helper tight" id="saved-details-hint" hidden>
+                                    Using saved details from your last booking assistance order.
+                                    <button type="button" class="save-details-link" onclick="clearSavedCustomerDetails()">Clear saved details</button>
+                                </p>
+                            </div>
                             <p class="lalamove-note hidden" id="sc-assist-note">
                                 🚗 For booking assistance we typically use <strong>Lalamove</strong> (or similar). Delivery fee is shouldered by the buyer and coordinated after we confirm your order.
                             </p>
@@ -1342,6 +1389,8 @@
             ];
 
             const BOX_PACKAGING_PRICE = { solo: 15, duo: 20, party: 25 };
+            const SAVED_SC_ASSIST_KEY = 'sushicrave_sc_assist_customer';
+
             const DISPATCH_WINDOW_LABEL = {
                 '11-13': '11AM–1PM Dispatch',
                 '15-17': '3PM–5PM Dispatch',
@@ -1761,6 +1810,68 @@
                 return null;
             }
 
+            function getSavedScAssistCustomer() {
+                try {
+                    const raw = localStorage.getItem(SAVED_SC_ASSIST_KEY);
+                    if (!raw) return null;
+                    const data = JSON.parse(raw);
+                    if (!data || typeof data !== 'object') return null;
+                    return data;
+                } catch {
+                    return null;
+                }
+            }
+
+            function updateSavedDetailsHint() {
+                const hint = document.getElementById('saved-details-hint');
+                if (!hint) return;
+                const hasSaved = !!getSavedScAssistCustomer();
+                hint.hidden = !hasSaved;
+            }
+
+            function applySavedScAssistCustomer() {
+                const saved = getSavedScAssistCustomer();
+                if (!saved) {
+                    updateSavedDetailsHint();
+                    return;
+                }
+                const set = (id, val) => {
+                    if (val == null || val === '') return;
+                    const el = document.getElementById(id);
+                    if (el) el.value = val;
+                };
+                set('c-name', saved.name);
+                set('c-phone', saved.phone);
+                set('c-messenger', saved.messenger);
+                set('c-address', saved.address);
+                const chk = document.getElementById('save-details-check');
+                if (chk) chk.checked = true;
+                updateSavedDetailsHint();
+            }
+
+            function persistSavedScAssistCustomer() {
+                const chk = document.getElementById('save-details-check');
+                if (!chk) return;
+                if (chk.checked) {
+                    localStorage.setItem(SAVED_SC_ASSIST_KEY, JSON.stringify({
+                        name:      document.getElementById('c-name').value.trim(),
+                        phone:     document.getElementById('c-phone').value.trim(),
+                        messenger: document.getElementById('c-messenger').value.trim(),
+                        address:   document.getElementById('c-address').value.trim(),
+                    }));
+                } else {
+                    localStorage.removeItem(SAVED_SC_ASSIST_KEY);
+                }
+                updateSavedDetailsHint();
+            }
+
+            function clearSavedCustomerDetails() {
+                localStorage.removeItem(SAVED_SC_ASSIST_KEY);
+                const chk = document.getElementById('save-details-check');
+                if (chk) chk.checked = false;
+                updateSavedDetailsHint();
+            }
+
             function setDeliveryFulfillment(code) {
                 deliveryFulfillment = code;
                 deliveryType = code === 'self_pickup' ? 'pickup' : 'delivery';
@@ -1769,6 +1880,7 @@
                 document.getElementById('opt-fulfill-sc').classList.toggle('active', code === 'sc_assist');
                 document.getElementById('pickup-handoff-panel').classList.toggle('hidden', code === 'sc_assist');
                 document.getElementById('customer-address-panel').classList.toggle('hidden', code !== 'sc_assist');
+                document.getElementById('save-details-wrap').classList.toggle('hidden', code !== 'sc_assist');
                 document.getElementById('sc-assist-note').classList.toggle('hidden', code !== 'sc_assist');
                 document.getElementById('sc-assist-arrival-note').classList.toggle('hidden', code !== 'sc_assist');
                 document.getElementById('priority-dispatch-wrap').classList.toggle('hidden', code !== 'sc_assist');
@@ -1952,6 +2064,10 @@
                     return;
                 }
 
+                if (deliveryFulfillment === 'sc_assist') {
+                    persistSavedScAssistCustomer();
+                }
+
                 document.getElementById('success-order-id').textContent = 'Order ID: ' + orderId;
                 document.getElementById('success-overlay').classList.add('show');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1974,6 +2090,7 @@
                     const el = document.getElementById(id);
                     if (el) el.value = '';
                 });
+                applySavedScAssistCustomer();
                 setDefaultPreferredDate();
 
                 setDeliveryFulfillment('self_pickup');
@@ -2000,6 +2117,7 @@
             // ── Init ───────────────────────────────────────────────────
             document.addEventListener('DOMContentLoaded', () => {
                 updateSummary();
+                applySavedScAssistCustomer();
                 const dateEl = document.getElementById('c-date');
                 setDefaultPreferredDate();
                 dateEl.addEventListener('change', onPreferredDateChange);
