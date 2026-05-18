@@ -1255,9 +1255,9 @@
                         <p class="delivery-helper hidden" id="sc-assist-arrival-note">
                             Arrival time may vary depending on rider availability, traffic, and distance po 😊
                         </p>
-                        <p class="field-error" id="dispatch-window-err">Please select a dispatch window.</p>
+                        <p class="field-error" id="dispatch-window-err">Please select a dispatch window, or enter your preferred dispatch time in special instructions below.</p>
                         <p class="delivery-helper flex-note">
-                            Need a different dispatch time? 😊 You may leave your preferred time in the special instructions section. Subject to availability po.
+                            Need a different dispatch time? 😊 Enter it in <strong>Special Requests</strong> below (e.g. &ldquo;Prefer dispatch around 2PM&rdquo;). Subject to availability po.
                         </p>
                         <!-- Supabase (optional): delivery_fulfillment text, dispatch_window text, priority_dispatch boolean -->
                     </div>
@@ -1269,8 +1269,10 @@
                             Special Requests
                         </h2>
                         <div class="form-group">
-                            <label for="c-notes">Any special instructions? <span style="font-weight:400;color:#888">(optional)</span></label>
-                            <textarea id="c-notes" placeholder="e.g. allergies, landmarks, other requests…"></textarea>
+                            <label for="c-notes">Any special instructions?</label>
+                            <textarea id="c-notes" placeholder="e.g. preferred dispatch time 2PM, allergies, landmarks…" oninput="onNotesInput()"></textarea>
+                            <p class="delivery-helper tight">If the dispatch windows above don&rsquo;t work for you, include your preferred time here.</p>
+                            <p class="field-error" id="notes-dispatch-err">Please include your preferred dispatch time (e.g. 2PM, 11:30 AM).</p>
                         </div>
                     </div>
 
@@ -1908,9 +1910,33 @@
                 updateSummary();
             }
 
+            function hasPreferredTimeInNotes() {
+                const notes = document.getElementById('c-notes').value.trim();
+                if (notes.length < 2) return false;
+                return /\d/.test(notes) ||
+                    /\b(am|pm|noon|midnight|morning|afternoon|evening)\b/i.test(notes);
+            }
+
+            function isDispatchRequirementMet(dateStr) {
+                const windowOk = dispatchWindow && !isDispatchWindowPastCutoff(dispatchWindow, dateStr);
+                return windowOk || hasPreferredTimeInNotes();
+            }
+
             function showDispatchWindowErr(show) {
                 document.getElementById('dispatch-window-wrap').classList.toggle('dispatch-window-error', show);
                 document.getElementById('dispatch-window-err').classList.toggle('show', show);
+            }
+
+            function showNotesDispatchErr(show) {
+                showErr('c-notes', 'notes-dispatch-err', show);
+            }
+
+            function onNotesInput() {
+                const dateStr = document.getElementById('c-date').value;
+                if (isDispatchRequirementMet(dateStr)) {
+                    showDispatchWindowErr(false);
+                    showNotesDispatchErr(false);
+                }
             }
 
             // ── Validation ─────────────────────────────────────────────
@@ -1973,11 +1999,17 @@
                 showErr('c-date', 'date-sunday-err', !!date && dateSunday);
                 if (!date || dateSunday) flagError(dateEl);
 
-                if (!dispatchWindow || isDispatchWindowPastCutoff(dispatchWindow, date)) {
+                const dispatchMet = isDispatchRequirementMet(date);
+                if (!dispatchMet) {
                     showDispatchWindowErr(true);
+                    showNotesDispatchErr(!hasPreferredTimeInNotes());
                     flagError(document.getElementById('dispatch-window-wrap'));
+                    if (!hasPreferredTimeInNotes()) {
+                        flagError(document.getElementById('c-notes'));
+                    }
                 } else {
                     showDispatchWindowErr(false);
+                    showNotesDispatchErr(false);
                 }
 
                 if (!ok && firstErrorEl) scrollToValidationTarget(firstErrorEl);
@@ -2046,9 +2078,13 @@
                         : (deliveryType === 'delivery' ? 'regular' : null),
                     delivery_address:   getSubmittedDeliveryAddress(),
                     preferred_date:     document.getElementById('c-date').value,
-                    preferred_time:     DISPATCH_WINDOW_LABEL[dispatchWindow] || '',
+                    preferred_time:     dispatchWindow && !isDispatchWindowPastCutoff(dispatchWindow, document.getElementById('c-date').value)
+                        ? DISPATCH_WINDOW_LABEL[dispatchWindow]
+                        : (hasPreferredTimeInNotes() ? 'Custom (see notes)' : ''),
                     delivery_fulfillment: deliveryFulfillment,
-                    dispatch_window:      dispatchWindow,
+                    dispatch_window:      dispatchWindow && !isDispatchWindowPastCutoff(dispatchWindow, document.getElementById('c-date').value)
+                        ? dispatchWindow
+                        : null,
                     priority_dispatch:    deliveryFulfillment === 'sc_assist' && priorityDispatch,
                     notes:              document.getElementById('c-notes').value.trim() || null,
                 };
@@ -2098,6 +2134,7 @@
                 document.getElementById('opt-window-11').classList.remove('active');
                 document.getElementById('opt-window-15').classList.remove('active');
                 showDispatchWindowErr(false);
+                showNotesDispatchErr(false);
                 const pdc = document.getElementById('priority-dispatch');
                 if (pdc) pdc.checked = false;
                 priorityDispatch = false;
