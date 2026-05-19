@@ -958,7 +958,7 @@
                         <li><a href="index.html#why-choose">About</a></li>
                         <li><a href="index.html#gallery">Gallery</a></li>
                     </ul>
-                    <a href="index.html#order" class="button primary nav-cta">Contact Us</a>
+                    <a href="index.html#order" class="button primary nav-cta">💬 Contact Us</a>
                 </div>
             </nav>
         </header>
@@ -986,7 +986,7 @@
 
                         <!-- Add Tray button -->
                         <button class="btn-add-tray" id="btn-add-tray" onclick="startPicker()">
-                            + Add a Tray
+                            🍱 + Add a Tray
                         </button>
 
                         <!-- Step-by-step Picker -->
@@ -1069,7 +1069,7 @@
                                 </label>
                                 <div class="picker-footer">
                                     <button class="picker-back-btn" onclick="goToStep('size')">← Back</button>
-                                    <button class="picker-confirm-btn" onclick="confirmItem()">Add to Order →</button>
+                                    <button class="picker-confirm-btn" onclick="confirmItem()">Add to Order 🍣</button>
                                 </div>
                             </div>
 
@@ -1367,8 +1367,8 @@
                 </p>
                 <p class="success-order-id" id="success-order-id"></p>
                 <div class="success-actions">
-                    <a href="index.html" class="button secondary">Back to Home</a>
-                    <button class="button primary" onclick="resetForm()">Order Again</button>
+                    <a href="index.html" class="button secondary">🏠 Back to Home</a>
+                    <button class="button primary" onclick="resetForm()">🍣 Order Again</button>
                 </div>
             </div>
         </div>
@@ -1729,7 +1729,7 @@
                 `;
                 }).join('');
 
-                document.getElementById('btn-add-tray').textContent = '+ Add a Tray';
+                document.getElementById('btn-add-tray').textContent = '🍱 + Add a Tray';
             }
 
             // ── Nori ───────────────────────────────────────────────────
@@ -2048,7 +2048,7 @@
                 const btn   = document.getElementById('submit-btn');
                 const errEl = document.getElementById('submit-error');
                 btn.disabled    = true;
-                btn.textContent = 'Placing Order…';
+                btn.textContent = '⏳ Placing Order…';
                 errEl.style.display = 'none';
 
                 const orderId = 'SC-' + Date.now().toString(36).toUpperCase()
@@ -2142,7 +2142,7 @@
                 document.getElementById('cart-items').innerHTML   = '';
                 document.getElementById('qty-nori').textContent   = '0';
                 document.getElementById('nori-row').classList.remove('has-qty');
-                document.getElementById('btn-add-tray').textContent = '+ Add a Tray';
+                document.getElementById('btn-add-tray').textContent = '🍱 + Add a Tray';
                 firstOrderPromo = false;
                 const promoChk = document.getElementById('first-order-promo');
                 if (promoChk) promoChk.checked = false;
