@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
@@ -47,7 +47,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Open+Sans:wght@400;500;600;700&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
             rel="stylesheet"
         />
     </head>
@@ -88,15 +88,14 @@
                         Cravings
                     </h1>
                     <p>
-                        Creamy. <br />Saucy. <br />
-                        Crave Worthy.
+                        Creamy. <br /><span style="color: #ff8c42"
+                        >Loaded.</span> <br
+                        />
+
+                        Crave-Worthy.
                     </p>
                 </div>
-                <a
-                    href="order.html"
-                    class="button primary"
-                    >Order Now</a
-                >
+                <a href="order.html" class="button primary">Order Now</a>
             </section>
 
             <!-- 2. Menu Highlights / Flavors -->
@@ -104,23 +103,32 @@
                 <div class="section-container">
                     <h2 class="section-title">Our Flavors</h2>
                     <p class="section-subtitle">
-                        Two irresistible flavors. Three tray sizes. Made to order.
+                        Two irresistible flavors. Three tray sizes. Made to
+                        order.
                     </p>
                     <div class="tray-cards flavor-cards">
                         <div class="tray-card featured">
                             <div class="savings-badge">⭐ Best Seller</div>
                             <div class="tray-image">
-                                <img src="images/Gemini_Generated_Image_wg4ui1wg4ui1wg4u.png" alt="Kani Mango Sushi Bake" />
+                                <img
+                                    src="images/Gemini_Generated_Image_wg4ui1wg4ui1wg4u.png"
+                                    alt="Kani Mango Sushi Bake"
+                                />
                             </div>
                             <div class="tray-content">
                                 <h3>🥭 Kani Mango</h3>
                                 <p class="tray-description">
-                                    Creamy crab stick and fresh mango — rich, tangy, and totally addictive.
+                                    Creamy crab stick and fresh mango — rich,
+                                    tangy, and totally addictive.
                                 </p>
                                 <div class="flavor-addons">
-                                    <span class="addon-tag">🧀 Cheesy +₱25</span>
+                                    <span class="addon-tag"
+                                        >🧀 Cheesy +₱25</span
+                                    >
                                     <span class="addon-tag">🌶️ Spicy +₱25</span>
-                                    <span class="addon-tag">🧀🌶️ Both +₱50</span>
+                                    <span class="addon-tag"
+                                        >🧀🌶️ Both +₱50</span
+                                    >
                                 </div>
                                 <div class="tray-sizes-mini">
                                     <div class="size-item">
@@ -138,18 +146,29 @@
                                         <span class="size-price">₱999</span>
                                     </div>
                                 </div>
-                                <a href="order.html" class="button primary">Order Now</a>
+                                <a href="order.html" class="button primary"
+                                    >Order Now</a
+                                >
                             </div>
                         </div>
                         <div class="tray-card">
-                            <div class="savings-badge" style="background:#0277b6;">✨ New</div>
+                            <div
+                                class="savings-badge"
+                                style="background: #0277b6"
+                            >
+                                ✨ New
+                            </div>
                             <div class="tray-image">
-                                <img src="images/Gemini_Generated_Image_zfpv02zfpv02zfpv.png" alt="Tuna Aburi Sushi Bake" />
+                                <img
+                                    src="images/Gemini_Generated_Image_zfpv02zfpv02zfpv.png"
+                                    alt="Tuna Aburi Sushi Bake"
+                                />
                             </div>
                             <div class="tray-content">
                                 <h3>🐟 Tuna Aburi</h3>
                                 <p class="tray-description">
-                                    Torched tuna with our signature sauce — bold, savory, and unforgettable.
+                                    Torched tuna with our signature sauce —
+                                    bold, savory, and unforgettable.
                                 </p>
                                 <div class="flavor-addons">
                                     <span class="addon-tag">🌶️ Spicy +₱25</span>
@@ -170,7 +189,9 @@
                                         <span class="size-price">₱999</span>
                                     </div>
                                 </div>
-                                <a href="order.html" class="button primary">Order Now</a>
+                                <a href="order.html" class="button primary"
+                                    >Order Now</a
+                                >
                             </div>
                         </div>
                     </div>
@@ -319,9 +340,7 @@
                             <div class="order-icon">📝</div>
                             <h3>Order Form</h3>
                             <p>Fill out our order form to place your order</p>
-                            <a
-                                href="order.html"
-                                class="button primary"
+                            <a href="order.html" class="button primary"
                                 >Order Now</a
                             >
                         </div>
@@ -492,7 +511,7 @@
                         const heroTop = heroRect.top;
                         const scrollProgress = Math.max(
                             -100,
-                            Math.min(1, -heroTop / heroHeight)
+                            Math.min(1, -heroTop / heroHeight),
                         );
 
                         // Parallax effect: background moves slower than scroll

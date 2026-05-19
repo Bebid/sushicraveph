@@ -29,14 +29,18 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Open+Sans:wght@400;500;600;700&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
             rel="stylesheet"
         />
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
         <style>
+            body {
+                font-family: "Poppins", sans-serif;
+            }
+
             /* ── Layout ── */
             .order-page-bg {
-                background: #f9f7f3;
+                background: #F9F7F3;
                 min-height: 60vh;
                 padding-bottom: 60px;
             }
@@ -52,8 +56,29 @@
 
             .summary-title,
             .picker-step-label,
-            .addons-label {
-                font-family: "Bitter", sans-serif;
+            .addons-label,
+            .form-section-title,
+            .delivery-subheading,
+            .fulfill-title,
+            .dispatch-window-label,
+            .cart-item-name,
+            .flavor-pick-name,
+            .size-pick-name,
+            .summary-item-name,
+            .success-title,
+            .box-pack-title,
+            .promo-option-title,
+            .pickup-handoff-title {
+                font-family: "Baloo 2", sans-serif;
+                text-transform: uppercase;
+            }
+
+            .button,
+            .btn-add-tray,
+            .addon-pick-btn,
+            .picker-back-btn,
+            .picker-confirm-btn {
+                text-transform: uppercase;
             }
 
             /* ── Form Sections ── */
@@ -67,7 +92,7 @@
             .form-section-title {
                 font-size: 20px;
                 font-weight: 800;
-                color: #264653;
+                color: #004469;
                 margin-bottom: 24px;
                 display: flex;
                 align-items: center;
@@ -95,14 +120,14 @@
                 flex-wrap: wrap;
                 gap: 12px;
                 padding: 12px 14px;
-                background: #f9f7f3;
+                background: #F9F7F3;
                 border-radius: 12px;
                 border: 1px solid #e8e8e8;
             }
             .cart-item-emoji { font-size: 22px; flex-shrink: 0; }
             .cart-item-info  { flex: 1; min-width: 0; }
-            .cart-item-name  { font-size: 14px; font-weight: 800; color: #264653; }
-            .cart-item-meta  { font-size: 12px; color: #888; margin-top: 2px; }
+            .cart-item-name  { font-size: 14px; font-weight: 800; color: #004469; }
+            .cart-item-meta  { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
             .cart-item-right {
                 display: flex;
                 align-items: center;
@@ -124,7 +149,7 @@
                 font-weight: 700;
                 line-height: 1;
                 cursor: pointer;
-                color: #264653;
+                color: #004469;
                 padding: 0;
                 transition: background 0.15s;
             }
@@ -134,15 +159,15 @@
                 text-align: center;
                 font-size: 14px;
                 font-weight: 800;
-                color: #264653;
+                color: #004469;
             }
-            .cart-item-price { font-size: 15px; font-weight: 800; color: #264653; flex-shrink: 0; white-space: nowrap; }
+            .cart-item-price { font-size: 15px; font-weight: 800; color: #004469; flex-shrink: 0; white-space: nowrap; }
             .cart-item-remove {
                 width: 26px; height: 26px;
                 border: none; background: #e8e8e8; border-radius: 50%;
                 font-size: 15px; cursor: pointer;
                 display: flex; align-items: center; justify-content: center;
-                color: #264653; flex-shrink: 0; transition: all 0.15s; padding: 0;
+                color: #004469; flex-shrink: 0; transition: all 0.15s; padding: 0;
             }
             .cart-item-remove:hover { background: #e74c3c; color: white; }
 
@@ -155,12 +180,12 @@
                 background: white;
                 font-size: 15px;
                 font-weight: 700;
-                color: #264653;
+                color: #004469;
                 cursor: pointer;
                 transition: all 0.15s;
                 margin-bottom: 16px;
             }
-            .btn-add-tray:hover { border-color: #ff8c42; color: #ff8c42; background: #fff9f5; }
+            .btn-add-tray:hover { border-color: #ff8c42; color: #ff8c42; background: #F9F7F3; }
 
             /* ── Tray Picker ── */
             .tray-picker {
@@ -179,19 +204,19 @@
             .picker-breadcrumb {
                 font-size: 13px;
                 font-weight: 700;
-                color: #264653;
+                color: #004469;
                 display: flex;
                 align-items: center;
                 gap: 6px;
                 flex-wrap: wrap;
             }
-            .picker-breadcrumb .crumb { color: #888; }
-            .picker-breadcrumb .crumb-sep { color: #ccc; }
+            .picker-breadcrumb .crumb { color: var(--text-muted); }
+            .picker-breadcrumb .crumb-sep { color: rgba(0, 68, 105, 0.35); }
             .picker-cancel {
                 background: none;
                 border: none;
                 font-size: 13px;
-                color: #aaa;
+                color: var(--text-muted);
                 cursor: pointer;
                 text-decoration: underline;
                 flex-shrink: 0;
@@ -200,7 +225,7 @@
             .picker-step-label {
                 font-size: 13px;
                 font-weight: 700;
-                color: #888;
+                color: var(--text-muted);
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
                 margin-bottom: 12px;
@@ -241,8 +266,8 @@
             .badge-bestseller { background: #ff8c42; }
             .badge-new        { background: #0277b6; }
             .flavor-pick-info { padding: 10px 12px 12px; }
-            .flavor-pick-name { font-size: 15px; font-weight: 800; color: #264653; }
-            .flavor-pick-desc { font-size: 12px; color: #888; margin-top: 3px; line-height: 1.4; }
+            .flavor-pick-name { font-size: 15px; font-weight: 800; color: #004469; }
+            .flavor-pick-desc { font-size: 12px; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
 
             /* Step: Size */
             .size-pick-grid {
@@ -262,9 +287,9 @@
                 flex-direction: column;
                 gap: 4px;
             }
-            .size-pick-card:hover { border-color: #ff8c42; background: #fff9f5; }
-            .size-pick-name  { font-size: 15px; font-weight: 800; color: #264653; }
-            .size-pick-dims  { font-size: 11px; color: #aaa; font-weight: 600; }
+            .size-pick-card:hover { border-color: #ff8c42; background: #F9F7F3; }
+            .size-pick-name  { font-size: 15px; font-weight: 800; color: #004469; }
+            .size-pick-dims  { font-size: 11px; color: var(--text-muted); font-weight: 600; }
             .size-pick-price { font-size: 15px; font-weight: 800; color: #ff8c42; margin-top: 2px; }
             .size-pick-nori  { font-size: 11px; font-weight: 700; color: #2a9d4e; margin-top: 4px; background: #edfbf1; border-radius: 99px; padding: 3px 8px; }
 
@@ -282,13 +307,13 @@
                 background: white;
                 font-size: 13px;
                 font-weight: 700;
-                color: #264653;
+                color: #004469;
                 cursor: pointer;
                 transition: all 0.15s;
                 white-space: nowrap;
             }
             .addon-pick-btn:hover  { border-color: #ff8c42; color: #ff8c42; }
-            .addon-pick-btn.none-pick.picked { background: #264653; border-color: #264653; color: white; }
+            .addon-pick-btn.none-pick.picked { background: #004469; border-color: #004469; color: white; }
 
             /* Cheesy — yellow/gold */
             .addon-pick-btn.cheesy-pick { border-color: #f5c842; color: #b8860b; background: #fffbea; }
@@ -301,7 +326,7 @@
             .addon-pick-btn.spicy-pick.picked { background: #e74c3c; border-color: #c0392b; color: white; }
 
             /* Both — split gradient border */
-            .addon-pick-btn.both-pick { border-color: #f5c842; color: #264653; background: linear-gradient(to right, #fffbea, #fff5f5); }
+            .addon-pick-btn.both-pick { border-color: #f5c842; color: #004469; background: linear-gradient(to right, #fffbea, #fff5f5); }
             .addon-pick-btn.both-pick:hover { border-color: #e74c3c; }
             .addon-pick-btn.both-pick.picked { background: linear-gradient(to right, #f5c842, #e74c3c); border-color: #e74c3c; color: white; }
 
@@ -319,10 +344,10 @@
                 border-radius: 10px;
                 background: white;
                 font-size: 14px; font-weight: 700;
-                color: #264653; cursor: pointer;
+                color: #004469; cursor: pointer;
                 transition: border-color 0.15s;
             }
-            .picker-back-btn:hover { border-color: #264653; }
+            .picker-back-btn:hover { border-color: #004469; }
             .picker-confirm-btn {
                 padding: 10px 22px;
                 border: none;
@@ -346,11 +371,11 @@
                 cursor: pointer;
                 font-size: 14px;
                 font-weight: 600;
-                color: #264653;
+                color: #004469;
                 line-height: 1.45;
                 transition: border-color 0.15s, background 0.15s;
             }
-            .box-pack-option:hover { border-color: #ff8c42; background: #fff9f5; }
+            .box-pack-option:hover { border-color: #ff8c42; background: #F9F7F3; }
             .box-pack-option input {
                 width: 18px; height: 18px;
                 margin-top: 2px;
@@ -367,7 +392,7 @@
             .box-pack-option .box-pack-title {
                 font-size: 15px;
                 font-weight: 700;
-                color: #264653;
+                color: #004469;
                 line-height: 1.35;
             }
             .box-pack-option .box-pack-price-tag {
@@ -377,13 +402,13 @@
             .box-pack-option .box-pack-taglish {
                 font-size: 13px;
                 font-weight: 500;
-                color: #444;
+                color: var(--text-muted);
                 line-height: 1.45;
             }
             .box-pack-option .box-pack-tiers {
                 font-size: 12px;
                 font-weight: 600;
-                color: #888;
+                color: var(--text-muted);
             }
 
             .promo-option {
@@ -394,7 +419,7 @@
                 padding: 14px 16px;
                 border: 2px solid #e8e8e8;
                 border-radius: 14px;
-                background: linear-gradient(135deg, #fffdf8 0%, #fff9f0 100%);
+                background: #F9F7F3;
                 cursor: pointer;
                 transition: border-color 0.15s, box-shadow 0.15s;
             }
@@ -419,13 +444,13 @@
             .promo-option-title {
                 font-size: 15px;
                 font-weight: 800;
-                color: #264653;
+                color: #004469;
                 line-height: 1.35;
             }
             .promo-option-sub {
                 font-size: 12px;
                 font-weight: 600;
-                color: #666;
+                color: var(--text-muted);
                 line-height: 1.45;
             }
 
@@ -440,13 +465,13 @@
                 background: #fafafa;
                 transition: border-color 0.2s, background 0.2s;
             }
-            .nori-row.has-qty { border-color: #264653; background: #f0f4f6; }
+            .nori-row.has-qty { border-color: #004469; background: #f0f4f6; }
             .nori-icon  { font-size: 32px; flex-shrink: 0; }
             .nori-info  { flex: 1; }
-            .nori-name  { font-size: 15px; font-weight: 800; color: #264653; }
+            .nori-name  { font-size: 15px; font-weight: 800; color: #004469; }
             .nori-price { font-size: 13px; font-weight: 700; color: #0277b6; margin-top: 2px; }
             .addons-label {
-                font-size: 13px; font-weight: 700; color: #264653;
+                font-size: 13px; font-weight: 700; color: #004469;
                 text-transform: uppercase; letter-spacing: 0.05em;
                 margin-bottom: 10px;
             }
@@ -460,7 +485,7 @@
             .qty-btn {
                 width: 34px; height: 34px; border: none;
                 background: #f0f0f0; font-size: 20px; font-weight: 700;
-                color: #264653; cursor: pointer;
+                color: #004469; cursor: pointer;
                 display: flex; align-items: center; justify-content: center;
                 transition: background 0.15s; padding: 0; line-height: 1;
             }
@@ -468,7 +493,7 @@
             .qty-display {
                 width: 36px; text-align: center;
                 font-size: 15px; font-weight: 700;
-                color: #264653; background: white;
+                color: #004469; background: white;
             }
 
             /* ── Error ── */
@@ -479,20 +504,20 @@
             .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
             .form-group { margin-bottom: 18px; }
             .form-group:last-child { margin-bottom: 0; }
-            .form-group label { display: block; font-size: 14px; font-weight: 700; color: #264653; margin-bottom: 7px; }
+            .form-group label { display: block; font-size: 14px; font-weight: 700; color: #004469; margin-bottom: 7px; }
             .form-group label .req { color: #ff8c42; margin-left: 2px; }
             .form-group input,
             .form-group select,
             .form-group textarea {
                 width: 100%; padding: 12px 16px;
                 border: 2px solid #e0e0e0; border-radius: 12px;
-                font-size: 15px; font-family: "Open Sans", sans-serif;
-                color: #264653; background: white;
+                font-size: 15px; font-family: "Poppins", sans-serif;
+                color: #004469; background: white;
                 transition: border-color 0.2s;
                 -webkit-appearance: none; appearance: none;
             }
             .form-group select {
-                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23264653' stroke-width='2.5'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23004469' stroke-width='2.5'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
                 background-repeat: no-repeat; background-position: right 12px center; background-size: 18px; padding-right: 40px;
             }
             .form-group input:focus,
@@ -509,8 +534,8 @@
             .delivery-batch-notice {
                 font-size: 14px;
                 line-height: 1.55;
-                color: #264653;
-                background: linear-gradient(135deg, #fff9f0 0%, #e8f4fd 100%);
+                color: #004469;
+                background: linear-gradient(135deg, #F9F7F3 0%, #e8f4fd 100%);
                 border: 2px solid #e8e8e8;
                 border-radius: 14px;
                 padding: 14px 16px;
@@ -521,7 +546,7 @@
                 font-weight: 800;
                 text-transform: uppercase;
                 letter-spacing: 0.06em;
-                color: #888;
+                color: var(--text-muted);
                 margin-bottom: 12px;
             }
             .fulfillment-grid {
@@ -550,7 +575,7 @@
             }
             .fulfillment-card.active {
                 border-color: #ff8c42;
-                background: #fff9f5;
+                background: #F9F7F3;
                 box-shadow: 0 4px 14px rgba(255, 140, 66, 0.18);
             }
             .fulfillment-card .fulfill-icon {
@@ -561,13 +586,13 @@
             .fulfillment-card .fulfill-title {
                 font-size: 14px;
                 font-weight: 800;
-                color: #264653;
+                color: #004469;
                 line-height: 1.35;
                 margin-bottom: 4px;
             }
             .fulfillment-card .fulfill-desc {
                 font-size: 12px;
-                color: #888;
+                color: var(--text-muted);
                 line-height: 1.4;
             }
             .fulfill-badge {
@@ -601,12 +626,12 @@
             .pickup-handoff-title {
                 font-size: 14px;
                 font-weight: 800;
-                color: #264653;
+                color: #004469;
                 margin-bottom: 6px;
             }
             .pickup-handoff-intro {
                 font-size: 12px;
-                color: #666;
+                color: var(--text-muted);
                 line-height: 1.45;
                 margin-bottom: 12px;
             }
@@ -618,7 +643,7 @@
             .pickup-handoff-row {
                 font-size: 14px;
                 line-height: 1.45;
-                color: #264653;
+                color: #004469;
             }
             .pickup-handoff-row .ph-label {
                 display: block;
@@ -626,7 +651,7 @@
                 font-weight: 800;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
-                color: #888;
+                color: var(--text-muted);
                 margin-bottom: 2px;
             }
             .pickup-handoff-row a {
@@ -638,7 +663,7 @@
             .customer-address-panel.hidden { display: none; }
             .delivery-helper {
                 font-size: 12px;
-                color: #666;
+                color: var(--text-muted);
                 line-height: 1.5;
                 margin-top: 8px;
             }
@@ -646,7 +671,7 @@
             .delivery-helper.flex-note {
                 margin-top: 14px;
                 padding: 12px 14px;
-                background: #f9f7f3;
+                background: #F9F7F3;
                 border-radius: 12px;
                 border: 1px solid #eee;
             }
@@ -654,7 +679,7 @@
                 display: block;
                 font-size: 14px;
                 font-weight: 700;
-                color: #264653;
+                color: #004469;
                 margin-bottom: 10px;
             }
             .dispatch-window-grid {
@@ -689,7 +714,7 @@
             .dispatch-window-card:hover { border-color: #ff8c42; }
             .dispatch-window-card.active {
                 border-color: #ff8c42;
-                background: #fff9f5;
+                background: #F9F7F3;
                 box-shadow: 0 2px 10px rgba(255, 140, 66, 0.2);
             }
             .dispatch-window-card.disabled {
@@ -701,7 +726,7 @@
             }
             .dispatch-window-card.disabled:hover { border-color: #e8e8e8; }
             .dispatch-window-card.disabled .dw-main,
-            .dispatch-window-card.disabled .dw-sub { color: #aaa; }
+            .dispatch-window-card.disabled .dw-sub { color: var(--text-muted); }
             .dispatch-window-cutoff {
                 display: flex;
                 align-items: flex-start;
@@ -734,13 +759,13 @@
             .dispatch-window-card .dw-main {
                 font-size: 15px;
                 font-weight: 800;
-                color: #264653;
+                color: #004469;
                 line-height: 1.25;
             }
             .dispatch-window-card .dw-sub {
                 font-size: 11px;
                 font-weight: 700;
-                color: #888;
+                color: var(--text-muted);
                 text-transform: uppercase;
                 letter-spacing: 0.04em;
                 margin-top: 6px;
@@ -763,7 +788,7 @@
                 cursor: pointer;
                 font-size: 14px;
                 font-weight: 700;
-                color: #264653;
+                color: #004469;
                 line-height: 1.45;
             }
             .priority-dispatch-label input {
@@ -789,7 +814,7 @@
                 cursor: pointer;
                 font-size: 14px;
                 font-weight: 600;
-                color: #264653;
+                color: #004469;
                 line-height: 1.45;
             }
             .save-details-label input {
@@ -813,7 +838,7 @@
             .save-details-link:hover { color: #c45a40; }
             .lalamove-note {
                 font-size: 12px;
-                color: #666;
+                color: var(--text-muted);
                 background: #f5f5f5;
                 border-radius: 10px;
                 padding: 10px 14px;
@@ -829,7 +854,7 @@
             /* ── Summary Panel ── */
             .order-summary-panel {
                 position: sticky; top: 100px;
-                background: #264653; color: white;
+                background: #004469; color: white;
                 border-radius: 24px; padding: 30px 28px;
             }
             .summary-title { font-size: 20px; font-weight: 800; margin-bottom: 20px; }
@@ -879,7 +904,7 @@
             /* ── Success Overlay ── */
             .success-overlay {
                 display: none; position: fixed; inset: 0;
-                background: rgba(38,70,83,0.93); z-index: 9999;
+                background: rgba(0, 68, 105, 0.93); z-index: 9999;
                 align-items: center; justify-content: center; padding: 20px;
             }
             .success-overlay.show { display: flex; }
@@ -890,9 +915,9 @@
             }
             @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
             .success-icon     { font-size: 68px; margin-bottom: 16px; }
-            .success-title    { font-size: 34px; font-weight: 800; color: #264653; margin-bottom: 10px; }
-            .success-msg      { font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 8px; }
-            .success-order-id { font-size: 13px; color: #aaa; margin-bottom: 32px; font-family: monospace; }
+            .success-title    { font-size: 34px; font-weight: 800; color: #004469; margin-bottom: 10px; }
+            .success-msg      { font-size: 16px; color: var(--text-muted); line-height: 1.6; margin-bottom: 8px; }
+            .success-order-id { font-size: 13px; color: var(--text-muted); margin-bottom: 32px; font-family: monospace; }
             .success-actions  { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
             .success-actions .button { font-size: 16px; padding: 14px 28px; }
 
@@ -941,8 +966,8 @@
         <!-- Main -->
         <div class="order-page-bg">
             <div style="max-width:1100px;margin:0 auto;padding:48px 20px 0;">
-                <h1 style="font-size:28px;font-weight:800;color:#264653;margin-bottom:6px;">Place Your Order 🍣</h1>
-                <p style="font-size:15px;color:#888;margin-bottom:0;">Fresh, creamy, and baked to perfection — just for you.</p>
+                <h1 style="font-size:28px;font-weight:800;color:#004469;margin-bottom:6px;">Place Your Order 🍣</h1>
+                <p style="font-size:15px;color:rgba(0,68,105,0.8);margin-bottom:0;">Fresh, creamy, and baked to perfection — just for you.</p>
             </div>
             <div class="order-page-layout">
 
@@ -990,7 +1015,7 @@
                                         </div>
                                     </div>
                                     <div class="flavor-pick-card" onclick="pickFlavor('tuna')">
-                                        <div class="flavor-pick-img" style="background:linear-gradient(135deg,#0277b6,#264653)">
+                                        <div class="flavor-pick-img" style="background:linear-gradient(135deg,#0277b6,#004469)">
                                             <img src="images/Gemini_Generated_Image_zfpv02zfpv02zfpv.png" alt="Tuna Aburi" />
                                             <span class="flavor-pick-badge badge-new">✨ New</span>
                                         </div>
@@ -1097,7 +1122,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="c-messenger">Facebook / Messenger <span style="font-weight:400;color:#888">(optional)</span></label>
+                            <label for="c-messenger">Facebook / Messenger <span style="font-weight:400;color:rgba(0,68,105,0.8)">(optional)</span></label>
                             <input type="text" id="c-messenger" placeholder="Facebook name or page link" />
                         </div>
                     </div>

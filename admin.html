@@ -24,19 +24,19 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Open+Sans:wght@400;500;600;700&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
             rel="stylesheet"
         />
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
         <style>
             :root {
-                --bg: #f0f2f5;
-                --header: #264653;
+                --bg: #F9F7F3;
+                --header: #004469;
                 --accent: #ff8c42;
                 --blue: #0277b6;
                 --card: #ffffff;
-                --text: #264653;
-                --muted: #888;
+                --text: #004469;
+                --muted: rgba(0, 68, 105, 0.8);
                 --radius: 14px;
                 --shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
                 --status-pending: #ff8c42;
@@ -52,7 +52,7 @@
             }
 
             body {
-                font-family: "Open Sans", sans-serif;
+                font-family: "Poppins", sans-serif;
                 font-size: 15px;
                 line-height: 1.5;
                 color: var(--text);
@@ -65,7 +65,21 @@
             .admin-header-title,
             .modal-section-title,
             .orders-table th {
-                font-family: "Bitter", sans-serif;
+                font-family: "Baloo 2", sans-serif;
+                text-transform: uppercase;
+            }
+
+            .login-btn,
+            .signout-btn,
+            .tab-btn,
+            .btn-view,
+            .btn-update-status,
+            .btn-delete,
+            .btn-confirm-delete,
+            .btn-cancel-delete,
+            .btn-cancel-promo,
+            .btn-restore-promo {
+                text-transform: uppercase;
             }
 
             /* ── Auth Gate ── */
@@ -83,7 +97,7 @@
             /* ── Login Screen ── */
             #login-screen {
                 min-height: 100vh;
-                background: linear-gradient(135deg, #264653 0%, #0277b6 100%);
+                background: linear-gradient(135deg, #004469 0%, #0277b6 100%);
                 align-items: center;
                 justify-content: center;
                 padding: 20px;
@@ -107,7 +121,7 @@
             .login-logo h2 {
                 font-size: 22px;
                 font-weight: 800;
-                color: #264653;
+                color: #004469;
                 margin-top: 12px;
             }
             .login-logo p {
@@ -122,7 +136,7 @@
                 display: block;
                 font-size: 12px;
                 font-weight: 700;
-                color: #264653;
+                color: #004469;
                 text-transform: uppercase;
                 letter-spacing: 0.05em;
                 margin-bottom: 7px;
@@ -133,7 +147,7 @@
                 border: 2px solid #e0e0e0;
                 border-radius: 12px;
                 font-size: 15px;
-                color: #264653;
+                color: #004469;
                 background: white;
                 transition: border-color 0.2s;
             }
@@ -175,7 +189,7 @@
 
             /* ── Admin Header ── */
             .admin-header {
-                background: #264653;
+                background: #004469;
                 padding: 0 24px;
                 position: sticky;
                 top: 0;
@@ -286,7 +300,7 @@
                 background: white;
                 font-size: 13px;
                 font-weight: 700;
-                color: #264653;
+                color: #004469;
                 cursor: pointer;
                 transition: all 0.15s;
                 display: flex;
@@ -298,8 +312,8 @@
                 color: #ff8c42;
             }
             .tab-btn.active {
-                background: #264653;
-                border-color: #264653;
+                background: #004469;
+                border-color: #004469;
                 color: white;
             }
             .tab-count {
@@ -334,7 +348,7 @@
                 border: 2px solid #e0e0e0;
                 border-radius: 10px;
                 font-size: 14px;
-                color: #264653;
+                color: #004469;
                 background: white;
                 width: 240px;
                 transition: border-color 0.2s;
@@ -411,7 +425,7 @@
             }
             .customer-name {
                 font-weight: 700;
-                color: #264653;
+                color: #004469;
             }
             .customer-phone {
                 font-size: 12px;
@@ -428,7 +442,7 @@
             }
             .total-cell {
                 font-weight: 800;
-                color: #264653;
+                color: #004469;
                 white-space: nowrap;
             }
             .date-cell {
@@ -444,7 +458,7 @@
             }
             .btn-view {
                 padding: 6px 14px;
-                background: #264653;
+                background: #004469;
                 color: white;
                 border: none;
                 border-radius: 8px;
@@ -471,7 +485,7 @@
             }
             .status-select-inline:focus {
                 outline: none;
-                box-shadow: 0 0 0 2px rgba(38, 70, 83, 0.25);
+                box-shadow: 0 0 0 2px rgba(0, 68, 105, 0.25);
             }
             .status-select-inline.status-select-pending {
                 background-color: var(--status-pending);
@@ -522,7 +536,7 @@
             }
             .modal-status-select[class*="status-select-"]:focus {
                 outline: none;
-                box-shadow: 0 0 0 2px rgba(38, 70, 83, 0.25);
+                box-shadow: 0 0 0 2px rgba(0, 68, 105, 0.25);
             }
 
             /* ── Status Badges ── */
@@ -562,7 +576,7 @@
                 color: #0277b6;
             }
             .delivery-badge.pickup {
-                background: #fff3e8;
+                background: #F9F7F3;
                 color: #ff8c42;
             }
 
@@ -580,7 +594,7 @@
             }
             .priority-badge.regular {
                 background: #f0f0f0;
-                color: #888;
+                color: var(--muted);
             }
 
             .fulfill-mini-badge {
@@ -594,7 +608,7 @@
                 color: #0277b6;
             }
             .fulfill-mini-badge.self-booking {
-                background: #fff3e8;
+                background: #F9F7F3;
                 color: #e67e22;
             }
             .order-type-tags {
@@ -640,7 +654,7 @@
                 display: none;
                 position: fixed;
                 inset: 0;
-                background: rgba(38, 70, 83, 0.72);
+                background: rgba(0, 0, 0, 0.72);
                 z-index: 500;
                 align-items: flex-start;
                 justify-content: center;
@@ -685,8 +699,8 @@
             .modal-header h3 {
                 font-size: 18px;
                 font-weight: 800;
-                color: #264653;
-                font-family: "Bitter", sans-serif;
+                color: #004469;
+                font-family: "Baloo 2", sans-serif;
             }
             .modal-created {
                 font-size: 12px;
@@ -704,7 +718,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                color: #264653;
+                color: #004469;
                 flex-shrink: 0;
                 transition: background 0.15s;
             }
@@ -746,7 +760,7 @@
             .info-item span {
                 font-size: 14px;
                 font-weight: 600;
-                color: #264653;
+                color: #004469;
             }
 
             .modal-plain-lines {
@@ -755,14 +769,14 @@
                 gap: 6px;
                 font-size: 15px;
                 line-height: 1.5;
-                color: #264653;
+                color: #004469;
             }
             .modal-plain-line.modal-plain-lead {
                 font-size: 17px;
                 font-weight: 800;
             }
             .modal-plain-line.modal-plain-muted {
-                color: #666;
+                color: var(--muted);
                 font-size: 14px;
             }
             .modal-plain-tags {
@@ -819,7 +833,7 @@
                 padding: 8px 16px;
                 background: white;
                 border: 2px solid #95a5a6;
-                color: #264653;
+                color: #004469;
                 border-radius: 10px;
                 font-size: 13px;
                 font-weight: 700;
@@ -829,7 +843,7 @@
                     background 0.15s;
             }
             .btn-cancel-promo:hover {
-                border-color: #264653;
+                border-color: #004469;
                 background: #f8f9fa;
             }
             .btn-restore-promo {
@@ -894,7 +908,7 @@
                 align-items: baseline;
                 padding: 14px 10px 0;
                 margin-top: 8px;
-                border-top: 2px solid #264653;
+                border-top: 2px solid #004469;
             }
             .modal-total-label {
                 font-size: 15px;
@@ -917,7 +931,7 @@
             .modal-status-label {
                 font-size: 13px;
                 font-weight: 700;
-                color: #264653;
+                color: #004469;
                 white-space: nowrap;
             }
             .modal-status-select {
@@ -926,14 +940,14 @@
                 border-radius: 10px;
                 font-size: 14px;
                 font-weight: 700;
-                color: #264653;
+                color: #004469;
                 cursor: pointer;
                 flex: 1;
                 min-width: 150px;
                 transition: border-color 0.2s;
                 -webkit-appearance: none;
                 appearance: none;
-                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23264653' stroke-width='2.5'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23004469' stroke-width='2.5'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
                 background-repeat: no-repeat;
                 background-position: right 10px center;
                 background-size: 16px;
@@ -1011,7 +1025,7 @@
             .btn-cancel-delete {
                 padding: 8px 16px;
                 background: #f0f2f5;
-                color: #264653;
+                color: #004469;
                 border: none;
                 border-radius: 8px;
                 font-size: 13px;
@@ -1024,7 +1038,7 @@
                 position: fixed;
                 bottom: 24px;
                 right: 24px;
-                background: #264653;
+                background: #004469;
                 color: white;
                 padding: 12px 20px;
                 border-radius: 12px;
@@ -1094,7 +1108,7 @@
                 .order-card-name {
                     font-size: 16px;
                     font-weight: 800;
-                    color: #264653;
+                    color: #004469;
                     margin-top: 2px;
                 }
                 .order-card-phone {
@@ -1116,7 +1130,7 @@
                 .order-card-total {
                     font-size: 18px;
                     font-weight: 800;
-                    color: #264653;
+                    color: #004469;
                     margin-left: auto;
                 }
                 .order-card-actions {
@@ -1545,7 +1559,7 @@
                             id="m-notes"
                             style="
                                 font-size: 14px;
-                                color: #555;
+                                color: var(--muted);
                                 line-height: 1.6;
                             "
                         ></p>

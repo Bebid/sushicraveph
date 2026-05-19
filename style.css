@@ -1,3 +1,8 @@
+:root {
+    --text-muted: rgba(0, 68, 105, 0.8);
+    --cream: #F9F7F3;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -5,10 +10,10 @@
 }
 
 body {
-    font-family: "Open Sans", sans-serif;
+    font-family: "Poppins", sans-serif;
     font-size: 16px;
     line-height: 1.5;
-    color: #264653;
+    color: #004469;
     background: #ffffff;
 }
 
@@ -18,16 +23,16 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: "Bitter", sans-serif;
+    font-family: "Baloo 2", sans-serif;
+    text-transform: uppercase;
 }
 
 article:first-child {
     background: radial-gradient(
         circle,
-        rgba(255, 255, 255, 1) 0%,
-        rgba(252, 243, 235, 1) 36%,
-        rgba(250, 233, 218, 1) 88%,
-        rgba(245, 214, 186, 1) 100%
+        #ffffff 0%,
+        var(--cream) 40%,
+        var(--cream) 100%
     );
 }
 
@@ -60,6 +65,12 @@ article:first-child {
     justify-content: space-between;
     height: 100%;
     width: 100%;
+}
+
+.hero h1,
+.hero p {
+    font-family: "Baloo 2", sans-serif;
+    text-transform: uppercase;
 }
 
 .hero h1 {
@@ -118,8 +129,9 @@ article:first-child {
     font-weight: 700;
     font-family: inherit;
     text-decoration: none;
+    text-transform: uppercase;
     color: white;
-    background: #264653;
+    background: #004469;
     border: none;
     cursor: pointer;
     display: inline-block;
@@ -130,8 +142,8 @@ article:first-child {
 }
 
 .button.peach {
-    background-color: #f5d6ba;
-    color: #264653;
+    background-color: var(--cream);
+    color: #004469;
 }
 
 .button.primary {
@@ -159,6 +171,7 @@ article:first-child {
 
 .site-title {
     display: block;
+    text-transform: uppercase;
 }
 
 .main-nav {
@@ -176,7 +189,7 @@ article:first-child {
 
 .logo h1 {
     font-size: 28px;
-    color: #264653;
+    color: #004469;
     margin: 0;
     font-weight: 800;
     display: flex;
@@ -198,7 +211,7 @@ article:first-child {
 
 .nav-menu a {
     text-decoration: none;
-    color: #264653;
+    color: #004469;
     font-weight: 500;
     transition: color 0.3s;
 }
@@ -273,17 +286,18 @@ article:first-child {
 }
 
 .section-title {
+    font-family: "Baloo 2", sans-serif;
     font-size: 42px;
     font-weight: 800;
     text-align: center;
     margin-bottom: 15px;
-    color: #264653;
+    color: #004469;
 }
 
 .section-subtitle {
     font-size: 20px;
     text-align: center;
-    color: #264653;
+    color: #004469;
     margin-bottom: 50px;
 }
 
@@ -298,7 +312,7 @@ section#menu::after {
     height: 50%;
     position: absolute;
     bottom: 0;
-    background-color: #f9f7f3;
+    background-color: var(--cream);
     width: 100%;
     z-index: 0;
 }
@@ -371,14 +385,14 @@ section#menu::after {
 
 .tray-content h3 {
     font-size: 28px;
-    color: #264653;
+    color: #004469;
     font-weight: 800;
 }
 
 .tray-description {
     font-size: 16px;
-    color: #666;
     line-height: 1.6;
+    color: var(--text-muted);
 }
 
 .tray-price {
@@ -404,7 +418,7 @@ section#menu::after {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    background: #fff3e8;
+    background: var(--cream);
     color: #ff8c42;
     border: 1px solid #ffd8b8;
     border-radius: 99px;
@@ -416,7 +430,7 @@ section#menu::after {
 .tray-sizes-mini {
     display: flex;
     align-items: center;
-    background: #f9f7f3;
+    background: var(--cream);
     border-radius: 14px;
     padding: 12px 16px;
     width: 100%;
@@ -434,7 +448,7 @@ section#menu::after {
 .size-name {
     font-size: 12px;
     font-weight: 700;
-    color: #888;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -442,7 +456,7 @@ section#menu::after {
 .size-price {
     font-size: 16px;
     font-weight: 800;
-    color: #264653;
+    color: #004469;
 }
 
 .size-divider {
@@ -460,7 +474,7 @@ section#menu::after {
 
 /* Why Choose Section */
 .why-choose-section {
-    background: #f9f7f3;
+    background: var(--cream);
 }
 
 .features-grid {
@@ -485,14 +499,14 @@ section#menu::after {
 .feature-card h3 {
     font-size: 24px;
     margin-bottom: 15px;
-    color: #264653;
+    color: #004469;
     font-weight: 800;
 }
 
 .feature-card p {
     font-size: 16px;
-    color: #666;
     line-height: 1.6;
+    color: var(--text-muted);
 }
 
 /* Gallery Section */
@@ -543,7 +557,7 @@ section#menu::after {
     text-align: center;
     background: white;
     font-weight: 500;
-    color: #264653;
+    color: #004469;
     font-size: 14px;
 }
 
@@ -554,7 +568,7 @@ section#menu::after {
 
 /* Testimonials Section */
 .testimonials-section {
-    background: #f9f7f3;
+    background: var(--cream);
 }
 
 .testimonials-slider {
@@ -589,10 +603,10 @@ section#menu::after {
 
 .testimonial-text {
     font-size: 16px;
-    color: #333;
     margin-bottom: 15px;
     line-height: 1.6;
     font-style: italic;
+    color: var(--text-muted);
 }
 
 .testimonial-author {
@@ -655,7 +669,7 @@ section#menu::after {
 }
 
 .order-card {
-    background: #f9f7f3;
+    background: var(--cream);
     padding: 40px 30px;
     border-radius: 24px;
     text-align: center;
@@ -669,14 +683,14 @@ section#menu::after {
 .order-card h3 {
     font-size: 24px;
     margin-bottom: 15px;
-    color: #264653;
+    color: #004469;
     font-weight: 800;
 }
 
 .order-card p {
     font-size: 16px;
-    color: #666;
     margin-bottom: 25px;
+    color: var(--text-muted);
 }
 
 .order-links {
@@ -698,7 +712,7 @@ section#menu::after {
     font-size: 28px;
     margin-bottom: 30px;
     text-align: center;
-    color: #264653;
+    color: #004469;
     font-weight: 800;
 }
 
@@ -710,7 +724,7 @@ section#menu::after {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: #264653;
+    color: #004469;
 }
 
 .form-group input,
@@ -720,7 +734,7 @@ section#menu::after {
     border: 2px solid #e0e0e0;
     border-radius: 24px;
     font-size: 16px;
-    font-family: "Open Sans", sans-serif;
+    font-family: "Poppins", sans-serif;
     transition: border-color 0.3s;
 }
 
@@ -741,7 +755,7 @@ section#menu::after {
 
 /* Footer */
 .site-footer {
-    background: #0077b6;
+    background: #004469;
     color: white;
     padding: 60px 20px 30px;
 }
