@@ -1081,7 +1081,7 @@
                             <div class="nori-icon">🌿</div>
                             <div class="nori-info">
                                 <div class="nori-name">Extra Nori</div>
-                                <div class="nori-price">₱35 per pack</div>
+                                <div class="nori-price">₱30 per pack</div>
                             </div>
                             <div class="qty-control">
                                 <button class="qty-btn" onclick="changeNori(-1)" aria-label="Decrease">−</button>
@@ -1390,21 +1390,32 @@
             };
 
             // ── Data ───────────────────────────────────────────────────
+            const NORI_UNIT_PRICE = 30;
+            /** Cheesy or spicy per tray; both = 2× single add-on price. */
+            const ADDON_UNIT_PRICE = { solo: 25, duo: 35, party: 45 };
+
+            function getAddonUnitPrice(addonId, trayId) {
+                if (!addonId || addonId === 'none') return 0;
+                const unit = ADDON_UNIT_PRICE[trayId] ?? ADDON_UNIT_PRICE.solo;
+                if (addonId === 'both') return unit * 2;
+                return unit;
+            }
+
             const FLAVORS = {
                 kani: {
                     id: 'kani', label: 'Kani Mango', emoji: '🥭',
                     addons: [
-                        { id: 'none',   label: 'None',              price: 0  },
-                        { id: 'cheesy', label: 'Cheesy',       price: 25 },
-                        { id: 'spicy',  label: 'Spicy',        price: 25 },
-                        { id: 'both',   label: 'Cheesy+Spicy',     price: 50 },
+                        { id: 'none',   label: 'None' },
+                        { id: 'cheesy', label: 'Cheesy' },
+                        { id: 'spicy',  label: 'Spicy' },
+                        { id: 'both',   label: 'Cheesy+Spicy' },
                     ]
                 },
                 tuna: {
                     id: 'tuna', label: 'Tuna Aburi', emoji: '🐟',
                     addons: [
-                        { id: 'none',  label: 'None',        price: 0  },
-                        { id: 'spicy', label: 'Spicy', price: 25 },
+                        { id: 'none',  label: 'None' },
+                        { id: 'spicy', label: 'Spicy' },
                     ]
                 }
             };
@@ -1623,11 +1634,12 @@
                 options.innerHTML = flavor.addons.map(a => {
                     const icon = ADDON_ICONS[a.id] || '';
                     const typeClass = TYPE_CLASS[a.id] || '';
+                    const price = getAddonUnitPrice(a.id, picking.trayId);
                     return `<button
                         class="addon-pick-btn ${typeClass} ${a.id === picking.addonId ? 'picked' : ''}"
                         onclick="pickAddon('${a.id}')"
                         style="display:inline-flex;align-items:center;gap:5px;"
-                    >${icon}${a.label}${a.price > 0 ? ' +₱' + a.price : ''}</button>`;
+                    >${icon}${a.label}${price > 0 ? ' +₱' + price : ''}</button>`;
                 }).join('');
             }
 
@@ -1642,9 +1654,10 @@
                 const flavor  = FLAVORS[picking.flavorId];
                 const tray    = TRAYS.find(t => t.id === picking.trayId);
                 const addon   = flavor.addons.find(a => a.id === picking.addonId);
+                const addonPrice = getAddonUnitPrice(picking.addonId, picking.trayId);
                 const inBox = document.getElementById('picker-in-box').checked;
                 const boxPrice = inBox ? getBoxPackagingPrice(tray.id) : 0;
-                const unitPrice = tray.price + addon.price + boxPrice;
+                const unitPrice = tray.price + addonPrice + boxPrice;
 
                 const newLine = {
                     uid:         Date.now().toString(36) + Math.random().toString(36).slice(2,5),
@@ -1657,7 +1670,7 @@
                     basePrice:   tray.price,
                     addonId:     addon.id,
                     addonLabel:  addon.label,
-                    addonPrice:  addon.price,
+                    addonPrice:  addonPrice,
                     boxPrice,
                     unitPrice,
                     inBox,
@@ -1742,7 +1755,7 @@
 
             // ── Summary ────────────────────────────────────────────────
             function getTotal() {
-                return cart.reduce((sum, i) => sum + trayLineTotalWithQty(i), 0) + noriQty * 35;
+                return cart.reduce((sum, i) => sum + trayLineTotalWithQty(i), 0) + noriQty * NORI_UNIT_PRICE;
             }
 
             function updateSummary() {
@@ -1786,7 +1799,7 @@
                 }).join('');
 
                 if (noriQty > 0) {
-                    const noriSub = 35 * noriQty;
+                    const noriSub = NORI_UNIT_PRICE * noriQty;
                     html += `
                         <div class="summary-item">
                             <div class="summary-item-main">
@@ -1797,7 +1810,7 @@
                                 <div class="summary-item-price">₱${noriSub.toLocaleString()}</div>
                             </div>
                             <ul class="summary-detail-lines">
-                                <li><span>₱35 × ${noriQty}</span><span>₱${noriSub.toLocaleString()}</span></li>
+                                <li><span>₱${NORI_UNIT_PRICE} × ${noriQty}</span><span>₱${noriSub.toLocaleString()}</span></li>
                             </ul>
                         </div>`;
                 }
@@ -2080,9 +2093,9 @@
                     items.push({
                         flavor: 'addon', flavorLabel: 'Add-on',
                         trayId: 'nori', trayName: 'Extra Nori',
-                        basePrice: 35, addonId: 'none', addonLabel: 'None',
-                        addonPrice: 0, unitPrice: 35,
-                        qty: noriQty, subtotal: 35 * noriQty,
+                        basePrice: NORI_UNIT_PRICE, addonId: 'none', addonLabel: 'None',
+                        addonPrice: 0, unitPrice: NORI_UNIT_PRICE,
+                        qty: noriQty, subtotal: NORI_UNIT_PRICE * noriQty,
                         promo_discount: 0,
                     });
                 }
