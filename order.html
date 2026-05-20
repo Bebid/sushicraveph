@@ -1009,19 +1009,11 @@
             }
             .success-qr-card img {
                 width: min(100%, 300px);
-                max-width: 300px;
-                height: auto;
-                min-height: 280px;
                 object-fit: contain;
                 border-radius: 10px;
                 display: block;
                 margin: 0 auto 10px;
                 image-rendering: -webkit-optimize-contrast;
-            }
-            .payment-step-section .success-qr-card img {
-                width: min(100%, 320px);
-                max-width: 320px;
-                min-height: 300px;
             }
             .success-qr-label {
                 font-size: 13px;
@@ -1631,7 +1623,6 @@
                 grid.innerHTML = PAYMENT_QR_CODES.map((m) => `
                     <div class="success-qr-card">
                         <img src="${m.image}" alt="${m.label} QR code" loading="lazy" />
-                        <div class="success-qr-label">${m.label}</div>
                         ${m.hint ? `<div class="success-qr-hint">${m.hint}</div>` : ''}
                     </div>
                 `).join('');
