@@ -98,6 +98,64 @@
                 align-items: center;
                 gap: 10px;
             }
+            .step-optional {
+                font-size: 13px;
+                font-weight: 600;
+                color: #888;
+                text-transform: none;
+                letter-spacing: 0;
+                margin-left: 8px;
+                font-family: "Poppins", sans-serif;
+            }
+            .payment-step-section {
+                background: linear-gradient(180deg, #fff 0%, #F9F7F3 100%);
+            }
+            .payment-step-note {
+                font-size: 14px;
+                color: #004469;
+                line-height: 1.55;
+                margin-bottom: 10px;
+            }
+            .payment-step-total {
+                font-size: 18px;
+                font-weight: 800;
+                color: #004469;
+                margin-bottom: 16px;
+            }
+            .payment-step-total span { color: #ff8c42; }
+            .payment-step-skip {
+                font-size: 13px;
+                color: #888;
+                margin-top: 14px;
+                line-height: 1.45;
+            }
+            .payment-proof-block {
+                margin-top: 24px;
+                padding-top: 22px;
+                border-top: 2px solid #e8e8e8;
+                text-align: left;
+            }
+            .payment-proof-title {
+                font-family: "Baloo 2", sans-serif;
+                font-size: 16px;
+                font-weight: 800;
+                color: #004469;
+                text-transform: uppercase;
+                margin-bottom: 6px;
+            }
+            .payment-proof-hint {
+                font-size: 13px;
+                color: #888;
+                line-height: 1.5;
+                margin-bottom: 14px;
+            }
+            .proof-file-label {
+                display: block;
+                font-size: 14px;
+                font-weight: 700;
+                color: #004469;
+                margin-bottom: 8px;
+            }
             .step-num {
                 width: 30px; height: 30px;
                 background: #ff8c42;
@@ -909,15 +967,106 @@
             }
             .success-overlay.show { display: flex; }
             .success-card {
-                background: white; border-radius: 32px; padding: 56px 40px;
-                text-align: center; max-width: 460px; width: 100%;
+                background: white; border-radius: 32px; padding: 40px 28px 28px;
+                text-align: center; max-width: 440px; width: 100%;
+                max-height: 90vh; overflow-y: auto;
                 animation: popIn 0.3s ease;
             }
             @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-            .success-icon     { font-size: 68px; margin-bottom: 16px; }
+            .success-icon     { font-size: 68px; margin-bottom: 12px; }
             .success-title    { font-size: 34px; font-weight: 800; color: #004469; margin-bottom: 10px; }
             .success-msg      { font-size: 16px; color: var(--text-muted); line-height: 1.6; margin-bottom: 8px; }
-            .success-order-id { font-size: 13px; color: var(--text-muted); margin-bottom: 32px; font-family: monospace; }
+            .success-order-id { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; font-family: monospace; }
+            .success-proof-note {
+                display: none;
+                background: #edfbf1;
+                border: 2px solid #2a9d4e;
+                border-radius: 14px;
+                padding: 12px 14px;
+                font-size: 14px;
+                font-weight: 700;
+                color: #1e8449;
+                margin-bottom: 20px;
+                line-height: 1.4;
+            }
+            .success-proof-note.show { display: block; }
+            .success-qr-grid,
+            #payment-qr-grid {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 24px;
+            }
+            .success-qr-card {
+                background: #fff;
+                border: 2px solid #e8e8e8;
+                border-radius: 16px;
+                padding: 16px 20px 20px;
+                text-align: center;
+                width: 100%;
+                max-width: 340px;
+                box-sizing: border-box;
+            }
+            .success-qr-card img {
+                width: min(100%, 300px);
+                max-width: 300px;
+                height: auto;
+                min-height: 280px;
+                object-fit: contain;
+                border-radius: 10px;
+                display: block;
+                margin: 0 auto 10px;
+                image-rendering: -webkit-optimize-contrast;
+            }
+            .payment-step-section .success-qr-card img {
+                width: min(100%, 320px);
+                max-width: 320px;
+                min-height: 300px;
+            }
+            .success-qr-label {
+                font-size: 13px;
+                font-weight: 800;
+                color: #004469;
+                text-transform: uppercase;
+            }
+            .success-qr-hint {
+                font-size: 11px;
+                color: #888;
+                margin-top: 4px;
+                line-height: 1.35;
+            }
+            .proof-file-input {
+                width: 100%;
+                font-size: 14px;
+                margin-bottom: 12px;
+            }
+            .proof-preview {
+                margin-bottom: 12px;
+                border-radius: 12px;
+                overflow: hidden;
+                border: 2px solid #e8e8e8;
+                max-height: 200px;
+            }
+            .proof-preview img {
+                width: 100%;
+                height: auto;
+                display: block;
+                object-fit: contain;
+                max-height: 200px;
+                background: #fafafa;
+            }
+            .proof-received {
+                display: none;
+                background: #edfbf1;
+                border: 2px solid #2a9d4e;
+                border-radius: 14px;
+                padding: 14px 16px;
+                font-size: 14px;
+                font-weight: 700;
+                color: #1e8449;
+                text-align: center;
+            }
+            .proof-received.show { display: block; }
             .success-actions  { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
             .success-actions .button { font-size: 16px; padding: 14px 28px; }
 
@@ -1282,7 +1431,7 @@
                         </p>
                         <p class="field-error" id="dispatch-window-err">Please select a dispatch window, or enter your preferred dispatch time in special instructions below.</p>
                         <p class="delivery-helper flex-note">
-                            Need a different dispatch time? 😊 Enter it in <strong>Special Requests</strong> below (e.g. &ldquo;Prefer dispatch around 2PM&rdquo;). Subject to availability po.
+                            Need a different dispatch time? 😊 Enter it in <strong>Step 4 — Special Requests</strong> (e.g. &ldquo;Prefer dispatch around 2PM&rdquo;). Subject to availability po.
                         </p>
                         <!-- Supabase (optional): delivery_fulfillment text, dispatch_window text, priority_dispatch boolean -->
                     </div>
@@ -1298,6 +1447,41 @@
                             <textarea id="c-notes" placeholder="e.g. preferred dispatch time 2PM, allergies, landmarks…" oninput="onNotesInput()"></textarea>
                             <p class="delivery-helper tight">If the dispatch windows above don&rsquo;t work for you, include your preferred time here.</p>
                             <p class="field-error" id="notes-dispatch-err">Please include your preferred dispatch time (e.g. 2PM, 11:30 AM).</p>
+                        </div>
+                    </div>
+
+                    <!-- 5. Payment (optional) -->
+                    <div class="form-section payment-step-section" id="payment-step-section">
+                        <h2 class="form-section-title">
+                            <span class="step-num">5</span>
+                            Payment
+                            <span class="step-optional">Optional</span>
+                        </h2>
+                        <p class="payment-step-note">
+                            Pay now via QR if you like, or when you receive your sushi tray — your choice.
+                        </p>
+                        <p class="payment-step-total">
+                            Amount due: <span id="payment-step-total">₱0</span>
+                        </p>
+                        <div class="success-qr-grid" id="payment-qr-grid"></div>
+                        <p class="payment-step-skip">
+                            You can skip payment now and pay on delivery — totally fine.
+                        </p>
+
+                        <div class="payment-proof-block" id="payment-proof-block">
+                            <div class="payment-proof-title">Proof of payment</div>
+                            <p class="payment-proof-hint">
+                                Already paid? Attach a screenshot below (optional). It will be sent when you tap <strong>Place Order</strong>.
+                            </p>
+                            <div class="proof-received" id="proof-received">✓ Payment proof included with your order</div>
+                            <label class="proof-file-label" for="proof-file">Payment screenshot (optional)</label>
+                            <input
+                                type="file"
+                                id="proof-file"
+                                class="proof-file-input"
+                                accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
+                            />
+                            <div class="proof-preview" id="proof-preview" hidden></div>
                         </div>
                     </div>
 
@@ -1366,9 +1550,10 @@
                     Salamat po sa pag-order! Kung di pa kayo nakaka-message sa amin, PM lang po sa Facebook namin para ma-confirm namin ang order niyo.
                 </p>
                 <p class="success-order-id" id="success-order-id"></p>
+                <p class="success-proof-note" id="success-proof-note">✓ Payment proof included with your order</p>
                 <div class="success-actions">
                     <a href="index.html" class="button secondary">🏠 Back to Home</a>
-                    <button class="button primary" onclick="resetForm()">🍣 Order Again</button>
+                    <button type="button" class="button primary" onclick="resetForm()">🍣 Order Again</button>
                 </div>
             </div>
         </div>
@@ -1380,6 +1565,129 @@
                 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhia2N2aWlzd2Rob2p2eHBsZ21wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MDYwNzQsImV4cCI6MjA5MjA4MjA3NH0.GlnxJXn-aQxUO23Qg5eSIQCRmeaHHxoa7V-bzRLPAGU',
                 { auth: { persistSession: false, autoRefreshToken: false } }
             );
+
+            const PAYMENT_STORAGE_BUCKET = 'payment-proofs';
+            const PROOF_MAX_BYTES = 8 * 1024 * 1024;
+            /** Replace .svg paths with your real QR PNGs when ready (e.g. gcash-qr.png). */
+            const PAYMENT_QR_CODES = [
+                { id: 'gcash', label: 'GCash', image: 'images/payment/gcash-qr.png', hint: 'Scan to pay via GCash' },
+                { id: 'maya', label: 'Maya', image: 'images/payment/maya-qr.png', hint: 'Scan to pay via Maya' },
+            ];
+
+            let proofFileSelected = null;
+
+            function generateOrderId() {
+                return 'SC-' + Date.now().toString(36).toUpperCase()
+                    + '-' + Math.random().toString(36).slice(2, 5).toUpperCase();
+            }
+
+            function getSelectedProofFile() {
+                const fileEl = document.getElementById('proof-file');
+                return fileEl?.files?.[0] || null;
+            }
+
+            function validateProofFile() {
+                const file = getSelectedProofFile();
+                if (!file) return { ok: true, file: null };
+                if (!file.type.startsWith('image/')) {
+                    return { ok: false, message: 'Payment proof must be an image (JPG, PNG, or WebP).' };
+                }
+                if (file.size > PROOF_MAX_BYTES) {
+                    return { ok: false, message: 'Payment proof is too large. Please use a file under 8 MB.' };
+                }
+                return { ok: true, file };
+            }
+
+            async function uploadProofForOrder(orderId, file) {
+                const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+                const path = `${orderId}/${Date.now()}.${ext}`;
+                const { error: uploadErr } = await _sb.storage
+                    .from(PAYMENT_STORAGE_BUCKET)
+                    .upload(path, file, {
+                        cacheControl: '3600',
+                        upsert: true,
+                        contentType: file.type || 'image/jpeg',
+                    });
+                if (uploadErr) {
+                    console.error('Storage upload error:', uploadErr);
+                    return { ok: false };
+                }
+                const { data: urlData } = _sb.storage.from(PAYMENT_STORAGE_BUCKET).getPublicUrl(path);
+                return {
+                    ok: true,
+                    url: urlData.publicUrl,
+                    uploadedAt: new Date().toISOString(),
+                };
+            }
+
+            function updatePaymentStepTotal() {
+                const el = document.getElementById('payment-step-total');
+                if (el) el.textContent = '₱' + getTotal().toLocaleString();
+            }
+
+            function renderPaymentQrCodes() {
+                const grid = document.getElementById('payment-qr-grid');
+                if (!grid) return;
+                grid.innerHTML = PAYMENT_QR_CODES.map((m) => `
+                    <div class="success-qr-card">
+                        <img src="${m.image}" alt="${m.label} QR code" loading="lazy" />
+                        <div class="success-qr-label">${m.label}</div>
+                        ${m.hint ? `<div class="success-qr-hint">${m.hint}</div>` : ''}
+                    </div>
+                `).join('');
+            }
+
+            function resetProofFormOnly() {
+                proofFileSelected = null;
+                const fileEl = document.getElementById('proof-file');
+                const preview = document.getElementById('proof-preview');
+                const received = document.getElementById('proof-received');
+                if (fileEl) {
+                    fileEl.value = '';
+                    fileEl.style.display = '';
+                }
+                if (preview) {
+                    preview.hidden = true;
+                    preview.innerHTML = '';
+                    preview.style.display = '';
+                }
+                if (received) received.classList.remove('show');
+                document.querySelector('.payment-proof-hint')?.style.removeProperty('display');
+                document.querySelector('.proof-file-label')?.style.removeProperty('display');
+            }
+
+            function resetProofUploadUi() {
+                resetProofFormOnly();
+                document.getElementById('success-overlay')?.classList.remove('show');
+                document.getElementById('success-proof-note')?.classList.remove('show');
+            }
+
+            function showOrderSuccess(orderId, includedProof) {
+                document.getElementById('success-order-id').textContent = 'Order ID: ' + orderId;
+                document.getElementById('success-proof-note')?.classList.toggle('show', !!includedProof);
+                document.getElementById('success-overlay').classList.add('show');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            function onProofFileChange() {
+                const fileEl = document.getElementById('proof-file');
+                const preview = document.getElementById('proof-preview');
+                proofFileSelected = fileEl.files && fileEl.files[0] ? fileEl.files[0] : null;
+                if (!proofFileSelected) {
+                    preview.hidden = true;
+                    preview.innerHTML = '';
+                    return;
+                }
+                const check = validateProofFile();
+                if (!check.ok) {
+                    preview.hidden = true;
+                    preview.innerHTML = '';
+                    return;
+                }
+                const url = URL.createObjectURL(proofFileSelected);
+                preview.innerHTML = `<img src="${url}" alt="Payment proof preview" />`;
+                preview.hidden = false;
+            }
 
             // ── Icons ──────────────────────────────────────────────────
             const ADDON_ICONS = {
@@ -1765,6 +2073,7 @@
                 if (cart.length === 0 && noriQty === 0) {
                     body.innerHTML = '<p class="summary-empty">No items yet.</p>';
                     total.textContent = '₱0';
+                    updatePaymentStepTotal();
                     return;
                 }
 
@@ -1829,6 +2138,7 @@
 
                 body.innerHTML  = html;
                 total.textContent = '₱' + getTotal().toLocaleString();
+                updatePaymentStepTotal();
             }
 
             function getHandoffAddressForOrder() {
@@ -2058,14 +2368,40 @@
             async function submitOrder() {
                 if (!validate()) return;
 
+                const proofCheck = validateProofFile();
+                if (!proofCheck.ok) {
+                    const errEl = document.getElementById('submit-error');
+                    errEl.textContent = proofCheck.message;
+                    errEl.style.display = 'block';
+                    document.getElementById('payment-step-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    return;
+                }
+
                 const btn   = document.getElementById('submit-btn');
                 const errEl = document.getElementById('submit-error');
                 btn.disabled    = true;
-                btn.textContent = '⏳ Placing Order…';
                 errEl.style.display = 'none';
 
-                const orderId = 'SC-' + Date.now().toString(36).toUpperCase()
-                    + '-' + Math.random().toString(36).slice(2,5).toUpperCase();
+                const orderId = generateOrderId();
+                let paymentProofUrl = null;
+                let paymentProofUploadedAt = null;
+
+                if (proofCheck.file) {
+                    btn.textContent = '⏳ Uploading proof…';
+                    const uploaded = await uploadProofForOrder(orderId, proofCheck.file);
+                    if (!uploaded.ok) {
+                        btn.disabled = false;
+                        btn.textContent = 'Place Order 🍣';
+                        errEl.textContent = 'Could not upload payment proof. Please try again or message us on Facebook with your receipt.';
+                        errEl.style.display = 'block';
+                        scrollToValidationTarget(errEl);
+                        return;
+                    }
+                    paymentProofUrl = uploaded.url;
+                    paymentProofUploadedAt = uploaded.uploadedAt;
+                }
+
+                btn.textContent = '⏳ Placing Order…';
 
                 const items = cart.map(item => {
                     const promoDisc = getTrayLinePromoDiscount(item);
@@ -2125,6 +2461,8 @@
                         : null,
                     priority_dispatch:    deliveryFulfillment === 'sc_assist' && priorityDispatch,
                     notes:              document.getElementById('c-notes').value.trim() || null,
+                    payment_proof_url: paymentProofUrl,
+                    payment_proof_uploaded_at: paymentProofUploadedAt,
                 };
 
                 const { error } = await _sb.from('orders').insert(record);
@@ -2142,9 +2480,7 @@
                     persistSavedScAssistCustomer();
                 }
 
-                document.getElementById('success-order-id').textContent = 'Order ID: ' + orderId;
-                document.getElementById('success-overlay').classList.add('show');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                showOrderSuccess(orderId, !!paymentProofUrl);
             }
 
             // ── Reset ──────────────────────────────────────────────────
@@ -2184,19 +2520,22 @@
                 btn.disabled    = false;
                 btn.textContent = 'Place Order 🍣';
                 document.getElementById('submit-error').style.display = 'none';
-                document.getElementById('success-overlay').classList.remove('show');
+                resetProofUploadUi();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 startPicker();
             }
 
             // ── Init ───────────────────────────────────────────────────
             document.addEventListener('DOMContentLoaded', () => {
+                renderPaymentQrCodes();
                 updateSummary();
                 applySavedScAssistCustomer();
                 const dateEl = document.getElementById('c-date');
                 setDefaultPreferredDate();
                 dateEl.addEventListener('change', onPreferredDateChange);
                 updateDispatchWindowAvailability();
+                const proofFile = document.getElementById('proof-file');
+                if (proofFile) proofFile.addEventListener('change', onProofFileChange);
                 startPicker();
             });
         </script>

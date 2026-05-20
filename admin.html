@@ -725,6 +725,23 @@
             .modal-close:hover {
                 background: #e0e0e0;
             }
+            .payment-proof-link {
+                display: inline-block;
+                margin-top: 8px;
+                font-size: 13px;
+                font-weight: 700;
+                color: #0277b6;
+            }
+            .payment-proof-img {
+                display: block;
+                max-width: 100%;
+                max-height: 280px;
+                margin-top: 10px;
+                border-radius: 12px;
+                border: 2px solid #e8e8e8;
+                object-fit: contain;
+                background: #fafafa;
+            }
 
             .modal-body {
                 padding: 20px 28px;
@@ -1564,6 +1581,13 @@
                             "
                         ></p>
                     </div>
+
+                    <div class="modal-section" id="m-payment-section" style="display: none">
+                        <div class="modal-section-title">Payment proof</div>
+                        <p id="m-payment-uploaded" style="font-size: 13px; color: var(--muted); margin-bottom: 8px;"></p>
+                        <a id="m-payment-link" class="payment-proof-link" href="#" target="_blank" rel="noopener">Open full image</a>
+                        <img id="m-payment-img" class="payment-proof-img" alt="Customer payment proof" />
+                    </div>
                 </div>
 
                 <!-- Footer: status + delete -->
@@ -2266,6 +2290,20 @@
                     notesSection.style.display = "";
                 } else {
                     notesSection.style.display = "none";
+                }
+
+                const paymentSection = document.getElementById("m-payment-section");
+                const proofUrl = o.payment_proof_url && String(o.payment_proof_url).trim();
+                if (proofUrl) {
+                    document.getElementById("m-payment-link").href = proofUrl;
+                    document.getElementById("m-payment-img").src = proofUrl;
+                    const uploaded = o.payment_proof_uploaded_at
+                        ? "Uploaded: " + fmtDate(o.payment_proof_uploaded_at)
+                        : "";
+                    document.getElementById("m-payment-uploaded").textContent = uploaded;
+                    paymentSection.style.display = "";
+                } else {
+                    paymentSection.style.display = "none";
                 }
 
                 // Status select
